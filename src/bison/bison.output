@@ -1,0 +1,6336 @@
+Gramática
+
+    0 $accept: S $end
+
+    1 S: decl_list
+
+    2 decl_list: decl_list decl
+    3          | decl
+
+    4 decl: var_decl
+    5     | fun_decl
+    6     | var_decl_with_assing
+
+    7 var_decl: TYPE ID ';'
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp ';'
+
+    9 fun_decl: TYPE ID '(' params ')' block_stmt
+   10         | TYPE ID '(' ')' block_stmt
+   11         | error
+
+   12 params: params ',' param_decl
+   13       | param_decl
+   14       | error
+
+   15 param_decl: TYPE ID
+
+   16 statement: exp_stmt
+   17          | block_stmt
+   18          | if_stmt
+   19          | return_stmt
+   20          | write_stmt
+   21          | writeln_stmt
+   22          | read_stmt
+   23          | var_decl
+   24          | var_decl_with_assing
+   25          | for_stmt
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp ')' block_stmt
+   27         | FOR '(' error ';' simple_exp ';' assing_exp ')' block_stmt
+
+   28 exp_stmt: exp ';'
+   29         | ';'
+
+   30 exp: assing_exp
+   31    | simple_exp
+
+   32 assing_exp: ID ASSIGN simple_exp
+   33           | ID error
+
+   34 block_stmt: '{' stmt_list '}'
+
+   35 stmt_list: stmt_list statement
+   36          | %empty
+   37          | error
+
+   38 if_stmt: IF '(' simple_exp ')' statement
+   39        | IF '(' simple_exp ')' statement ELSE statement
+
+   40 return_stmt: RETURN ';'
+   41            | RETURN exp ';'
+
+   42 write_stmt: WRITE '(' simple_exp ')' ';'
+
+   43 writeln_stmt: WRITELN '(' simple_exp ')' ';'
+
+   44 read_stmt: READ '(' ID ')' ';'
+
+   45 simple_exp: bin_exp
+   46           | list_exp
+
+   47 list_exp: factor ':' factor
+   48         | '?' factor
+   49         | '%' factor
+   50         | factor MAP factor
+   51         | factor FILTER factor
+
+   52 bin_exp: bin_exp LOG_OP unary_log_exp
+   53        | unary_log_exp
+
+   54 unary_log_exp: EXCLAMATION unary_log_exp
+   55              | rel_exp
+
+   56 rel_exp: rel_exp REL_OP sum_exp
+   57        | sum_exp
+
+   58 sum_exp: sum_exp SUM_OP mul_exp
+   59        | mul_exp
+
+   60 mul_exp: mul_exp MUL_OP factor
+   61        | factor
+   62        | SUM_OP factor
+
+   63 factor: immutable
+   64       | ID
+
+   65 immutable: '(' simple_exp ')'
+   66          | call
+   67          | constant
+
+   68 call: ID '(' args ')'
+   69     | ID '(' ')'
+
+   70 args: args ',' simple_exp
+   71     | simple_exp
+
+   72 constant: NIL
+   73         | INT
+   74         | FLOAT
+   75         | STRING
+
+
+Terminais, com as regras onde eles aparecem
+
+    $end (0) 0
+    '%' <token> (37) 49
+    '(' <token> (40) 9 10 26 27 38 39 42 43 44 65 68 69
+    ')' <token> (41) 9 10 26 27 38 39 42 43 44 65 68 69
+    ',' <token> (44) 12 70
+    ':' <token> (58) 47
+    ';' <token> (59) 7 8 26 27 28 29 40 41 42 43 44
+    '?' <token> (63) 48
+    '{' <token> (123) 34
+    '}' <token> (125) 34
+    error (256) 11 14 27 33 37
+    ID <token> (258) 7 8 9 10 15 32 33 44 64 68 69
+    INT <token> (259) 73
+    FLOAT <token> (260) 74
+    NIL <token> (261) 72
+    IF <token> (262) 38 39
+    ELSE <token> (263) 39
+    ASSIGN <token> (264) 8 32
+    FOR <token> (265) 26 27
+    RETURN <token> (266) 40 41
+    TYPE <token> (267) 7 8 9 10 15
+    WRITE <token> (268) 42
+    WRITELN <token> (269) 43
+    READ <token> (270) 44
+    MUL_OP <token> (271) 60
+    SUM_OP <token> (272) 58 62
+    REL_OP <token> (273) 56
+    EXCLAMATION <token> (274) 54
+    LOG_OP <token> (275) 52
+    MAP <token> (276) 50
+    FILTER <token> (277) 51
+    THEN (278)
+    STRING <token> (279) 75
+
+
+Não terminais com as regras onde eles aparecem
+
+    $accept (34)
+        à esquerda: 0
+    S <node> (35)
+        à esquerda: 1
+        à direita: 0
+    decl_list <node> (36)
+        à esquerda: 2 3
+        à direita: 1 2
+    decl <node> (37)
+        à esquerda: 4 5 6
+        à direita: 2 3
+    var_decl <node> (38)
+        à esquerda: 7
+        à direita: 4 23
+    var_decl_with_assing <node> (39)
+        à esquerda: 8
+        à direita: 6 24
+    fun_decl <node> (40)
+        à esquerda: 9 10 11
+        à direita: 5
+    params <node> (41)
+        à esquerda: 12 13 14
+        à direita: 9 12
+    param_decl <node> (42)
+        à esquerda: 15
+        à direita: 12 13
+    statement <node> (43)
+        à esquerda: 16 17 18 19 20 21 22 23 24 25
+        à direita: 35 38 39
+    for_stmt <node> (44)
+        à esquerda: 26 27
+        à direita: 25
+    exp_stmt <node> (45)
+        à esquerda: 28 29
+        à direita: 16
+    exp <node> (46)
+        à esquerda: 30 31
+        à direita: 28 41
+    assing_exp <node> (47)
+        à esquerda: 32 33
+        à direita: 26 27 30
+    block_stmt <node> (48)
+        à esquerda: 34
+        à direita: 9 10 17 26 27
+    stmt_list <node> (49)
+        à esquerda: 35 36 37
+        à direita: 34 35
+    if_stmt <node> (50)
+        à esquerda: 38 39
+        à direita: 18
+    return_stmt <node> (51)
+        à esquerda: 40 41
+        à direita: 19
+    write_stmt <node> (52)
+        à esquerda: 42
+        à direita: 20
+    writeln_stmt <node> (53)
+        à esquerda: 43
+        à direita: 21
+    read_stmt <node> (54)
+        à esquerda: 44
+        à direita: 22
+    simple_exp <node> (55)
+        à esquerda: 45 46
+        à direita: 8 26 27 31 32 38 39 42 43 65 70 71
+    list_exp <node> (56)
+        à esquerda: 47 48 49 50 51
+        à direita: 46
+    bin_exp <node> (57)
+        à esquerda: 52 53
+        à direita: 45 52
+    unary_log_exp <node> (58)
+        à esquerda: 54 55
+        à direita: 52 53 54
+    rel_exp <node> (59)
+        à esquerda: 56 57
+        à direita: 55 56
+    sum_exp <node> (60)
+        à esquerda: 58 59
+        à direita: 56 57 58
+    mul_exp <node> (61)
+        à esquerda: 60 61 62
+        à direita: 58 59 60
+    factor <node> (62)
+        à esquerda: 63 64
+        à direita: 47 48 49 50 51 60 61 62
+    immutable <node> (63)
+        à esquerda: 65 66 67
+        à direita: 63
+    call <node> (64)
+        à esquerda: 68 69
+        à direita: 66
+    args <node> (65)
+        à esquerda: 70 71
+        à direita: 68 70
+    constant <node> (66)
+        à esquerda: 72 73 74 75
+        à direita: 67
+
+
+Estado 0
+
+    0 $accept: • S $end
+
+    error  deslocar, e ir ao estado 1
+    TYPE   deslocar, e ir ao estado 2
+
+    S                     ir ao estado 3
+    decl_list             ir ao estado 4
+    decl                  ir ao estado 5
+    var_decl              ir ao estado 6
+    var_decl_with_assing  ir ao estado 7
+    fun_decl              ir ao estado 8
+
+
+Estado 1
+
+   11 fun_decl: error •
+
+    $end   reduzir usando a regra 11 (fun_decl)
+    error  reduzir usando a regra 11 (fun_decl)
+    TYPE   reduzir usando a regra 11 (fun_decl)
+
+
+Estado 2
+
+    7 var_decl: TYPE • ID ';'
+    8 var_decl_with_assing: TYPE • ID ASSIGN simple_exp ';'
+    9 fun_decl: TYPE • ID '(' params ')' block_stmt
+   10         | TYPE • ID '(' ')' block_stmt
+
+    ID  deslocar, e ir ao estado 9
+
+
+Estado 3
+
+    0 $accept: S • $end
+
+    $end  deslocar, e ir ao estado 10
+
+
+Estado 4
+
+    1 S: decl_list •
+    2 decl_list: decl_list • decl
+
+    error  deslocar, e ir ao estado 1
+    TYPE   deslocar, e ir ao estado 2
+
+    $end  reduzir usando a regra 1 (S)
+
+    decl                  ir ao estado 11
+    var_decl              ir ao estado 6
+    var_decl_with_assing  ir ao estado 7
+    fun_decl              ir ao estado 8
+
+
+Estado 5
+
+    3 decl_list: decl •
+
+    $end   reduzir usando a regra 3 (decl_list)
+    error  reduzir usando a regra 3 (decl_list)
+    TYPE   reduzir usando a regra 3 (decl_list)
+
+
+Estado 6
+
+    4 decl: var_decl •
+
+    $end   reduzir usando a regra 4 (decl)
+    error  reduzir usando a regra 4 (decl)
+    TYPE   reduzir usando a regra 4 (decl)
+
+
+Estado 7
+
+    6 decl: var_decl_with_assing •
+
+    $end   reduzir usando a regra 6 (decl)
+    error  reduzir usando a regra 6 (decl)
+    TYPE   reduzir usando a regra 6 (decl)
+
+
+Estado 8
+
+    5 decl: fun_decl •
+
+    $end   reduzir usando a regra 5 (decl)
+    error  reduzir usando a regra 5 (decl)
+    TYPE   reduzir usando a regra 5 (decl)
+
+
+Estado 9
+
+    7 var_decl: TYPE ID • ';'
+    8 var_decl_with_assing: TYPE ID • ASSIGN simple_exp ';'
+    9 fun_decl: TYPE ID • '(' params ')' block_stmt
+   10         | TYPE ID • '(' ')' block_stmt
+
+    ASSIGN  deslocar, e ir ao estado 12
+    ';'     deslocar, e ir ao estado 13
+    '('     deslocar, e ir ao estado 14
+
+
+Estado 10
+
+    0 $accept: S $end •
+
+    $padrão  aceitar
+
+
+Estado 11
+
+    2 decl_list: decl_list decl •
+
+    $end   reduzir usando a regra 2 (decl_list)
+    error  reduzir usando a regra 2 (decl_list)
+    TYPE   reduzir usando a regra 2 (decl_list)
+
+
+Estado 12
+
+    8 var_decl_with_assing: TYPE ID ASSIGN • simple_exp ';'
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 25
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 13
+
+    7 var_decl: TYPE ID ';' •
+
+    $end   reduzir usando a regra 7 (var_decl)
+    error  reduzir usando a regra 7 (var_decl)
+    TYPE   reduzir usando a regra 7 (var_decl)
+
+
+Estado 14
+
+    9 fun_decl: TYPE ID '(' • params ')' block_stmt
+   10         | TYPE ID '(' • ')' block_stmt
+
+    error  deslocar, e ir ao estado 36
+    TYPE   deslocar, e ir ao estado 37
+    ')'    deslocar, e ir ao estado 38
+
+    params      ir ao estado 39
+    param_decl  ir ao estado 40
+
+
+Estado 15
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 41
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ':'     reduzir usando a regra 64 (factor)
+    MAP     reduzir usando a regra 64 (factor)
+    FILTER  reduzir usando a regra 64 (factor)
+    ';'     reduzir usando a regra 64 (factor)
+
+
+Estado 16
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ':'     reduzir usando a regra 73 (constant)
+    MAP     reduzir usando a regra 73 (constant)
+    FILTER  reduzir usando a regra 73 (constant)
+    ';'     reduzir usando a regra 73 (constant)
+
+
+Estado 17
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ':'     reduzir usando a regra 74 (constant)
+    MAP     reduzir usando a regra 74 (constant)
+    FILTER  reduzir usando a regra 74 (constant)
+    ';'     reduzir usando a regra 74 (constant)
+
+
+Estado 18
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ':'     reduzir usando a regra 72 (constant)
+    MAP     reduzir usando a regra 72 (constant)
+    FILTER  reduzir usando a regra 72 (constant)
+    ';'     reduzir usando a regra 72 (constant)
+
+
+Estado 19
+
+   62 mul_exp: SUM_OP • factor
+
+    ID      deslocar, e ir ao estado 145
+    INT     deslocar, e ir ao estado 146
+    FLOAT   deslocar, e ir ao estado 147
+    NIL     deslocar, e ir ao estado 148
+    STRING  deslocar, e ir ao estado 149
+    '('     deslocar, e ir ao estado 150
+
+    factor     ir ao estado 42
+    immutable  ir ao estado 151
+    call       ir ao estado 152
+    constant   ir ao estado 153
+
+
+Estado 20
+
+   54 unary_log_exp: EXCLAMATION • unary_log_exp
+
+    ID           deslocar, e ir ao estado 145
+    INT          deslocar, e ir ao estado 146
+    FLOAT        deslocar, e ir ao estado 147
+    NIL          deslocar, e ir ao estado 148
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    STRING       deslocar, e ir ao estado 149
+    '('          deslocar, e ir ao estado 150
+
+    unary_log_exp  ir ao estado 43
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 44
+    immutable      ir ao estado 151
+    call           ir ao estado 152
+    constant       ir ao estado 153
+
+
+Estado 21
+
+   48 list_exp: '?' • factor
+
+    ID      deslocar, e ir ao estado 154
+    INT     deslocar, e ir ao estado 155
+    FLOAT   deslocar, e ir ao estado 156
+    NIL     deslocar, e ir ao estado 157
+    STRING  deslocar, e ir ao estado 158
+    '('     deslocar, e ir ao estado 159
+
+    factor     ir ao estado 45
+    immutable  ir ao estado 160
+    call       ir ao estado 161
+    constant   ir ao estado 162
+
+
+Estado 22
+
+   49 list_exp: '%' • factor
+
+    ID      deslocar, e ir ao estado 154
+    INT     deslocar, e ir ao estado 155
+    FLOAT   deslocar, e ir ao estado 156
+    NIL     deslocar, e ir ao estado 157
+    STRING  deslocar, e ir ao estado 158
+    '('     deslocar, e ir ao estado 159
+
+    factor     ir ao estado 46
+    immutable  ir ao estado 160
+    call       ir ao estado 161
+    constant   ir ao estado 162
+
+
+Estado 23
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ':'     reduzir usando a regra 75 (constant)
+    MAP     reduzir usando a regra 75 (constant)
+    FILTER  reduzir usando a regra 75 (constant)
+    ';'     reduzir usando a regra 75 (constant)
+
+
+Estado 24
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 47
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 25
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp • ';'
+
+    ';'  deslocar, e ir ao estado 48
+
+
+Estado 26
+
+   46 simple_exp: list_exp •
+
+    ';'  reduzir usando a regra 46 (simple_exp)
+
+
+Estado 27
+
+   45 simple_exp: bin_exp •
+   52 bin_exp: bin_exp • LOG_OP unary_log_exp
+
+    LOG_OP  deslocar, e ir ao estado 49
+
+    ';'  reduzir usando a regra 45 (simple_exp)
+
+
+Estado 28
+
+   53 bin_exp: unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 53 (bin_exp)
+    ';'     reduzir usando a regra 53 (bin_exp)
+
+
+Estado 29
+
+   55 unary_log_exp: rel_exp •
+   56 rel_exp: rel_exp • REL_OP sum_exp
+
+    REL_OP  deslocar, e ir ao estado 50
+
+    LOG_OP  reduzir usando a regra 55 (unary_log_exp)
+    ';'     reduzir usando a regra 55 (unary_log_exp)
+
+
+Estado 30
+
+   57 rel_exp: sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 51
+
+    REL_OP  reduzir usando a regra 57 (rel_exp)
+    LOG_OP  reduzir usando a regra 57 (rel_exp)
+    ';'     reduzir usando a regra 57 (rel_exp)
+
+
+Estado 31
+
+   59 sum_exp: mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 52
+
+    SUM_OP  reduzir usando a regra 59 (sum_exp)
+    REL_OP  reduzir usando a regra 59 (sum_exp)
+    LOG_OP  reduzir usando a regra 59 (sum_exp)
+    ';'     reduzir usando a regra 59 (sum_exp)
+
+
+Estado 32
+
+   47 list_exp: factor • ':' factor
+   50         | factor • MAP factor
+   51         | factor • FILTER factor
+   61 mul_exp: factor •
+
+    ':'     deslocar, e ir ao estado 53
+    MAP     deslocar, e ir ao estado 54
+    FILTER  deslocar, e ir ao estado 55
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ';'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 33
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ':'     reduzir usando a regra 63 (factor)
+    MAP     reduzir usando a regra 63 (factor)
+    FILTER  reduzir usando a regra 63 (factor)
+    ';'     reduzir usando a regra 63 (factor)
+
+
+Estado 34
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ':'     reduzir usando a regra 66 (immutable)
+    MAP     reduzir usando a regra 66 (immutable)
+    FILTER  reduzir usando a regra 66 (immutable)
+    ';'     reduzir usando a regra 66 (immutable)
+
+
+Estado 35
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ':'     reduzir usando a regra 67 (immutable)
+    MAP     reduzir usando a regra 67 (immutable)
+    FILTER  reduzir usando a regra 67 (immutable)
+    ';'     reduzir usando a regra 67 (immutable)
+
+
+Estado 36
+
+   14 params: error •
+
+    ','  reduzir usando a regra 14 (params)
+    ')'  reduzir usando a regra 14 (params)
+
+
+Estado 37
+
+   15 param_decl: TYPE • ID
+
+    ID  deslocar, e ir ao estado 56
+
+
+Estado 38
+
+   10 fun_decl: TYPE ID '(' ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 57
+
+    block_stmt  ir ao estado 58
+
+
+Estado 39
+
+    9 fun_decl: TYPE ID '(' params • ')' block_stmt
+   12 params: params • ',' param_decl
+
+    ','  deslocar, e ir ao estado 59
+    ')'  deslocar, e ir ao estado 60
+
+
+Estado 40
+
+   13 params: param_decl •
+
+    ','  reduzir usando a regra 13 (params)
+    ')'  reduzir usando a regra 13 (params)
+
+
+Estado 41
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 61
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 63
+    constant       ir ao estado 202
+
+
+Estado 42
+
+   62 mul_exp: SUM_OP factor •
+
+    MUL_OP  reduzir usando a regra 62 (mul_exp)
+    SUM_OP  reduzir usando a regra 62 (mul_exp)
+    REL_OP  reduzir usando a regra 62 (mul_exp)
+    LOG_OP  reduzir usando a regra 62 (mul_exp)
+    ';'     reduzir usando a regra 62 (mul_exp)
+
+
+Estado 43
+
+   54 unary_log_exp: EXCLAMATION unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 54 (unary_log_exp)
+    ';'     reduzir usando a regra 54 (unary_log_exp)
+
+
+Estado 44
+
+   61 mul_exp: factor •
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ';'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 45
+
+   48 list_exp: '?' factor •
+
+    ';'  reduzir usando a regra 48 (list_exp)
+
+
+Estado 46
+
+   49 list_exp: '%' factor •
+
+    ';'  reduzir usando a regra 49 (list_exp)
+
+
+Estado 47
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 64
+
+
+Estado 48
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp ';' •
+
+    $end   reduzir usando a regra 8 (var_decl_with_assing)
+    error  reduzir usando a regra 8 (var_decl_with_assing)
+    TYPE   reduzir usando a regra 8 (var_decl_with_assing)
+
+
+Estado 49
+
+   52 bin_exp: bin_exp LOG_OP • unary_log_exp
+
+    ID           deslocar, e ir ao estado 145
+    INT          deslocar, e ir ao estado 146
+    FLOAT        deslocar, e ir ao estado 147
+    NIL          deslocar, e ir ao estado 148
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    STRING       deslocar, e ir ao estado 149
+    '('          deslocar, e ir ao estado 150
+
+    unary_log_exp  ir ao estado 65
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 44
+    immutable      ir ao estado 151
+    call           ir ao estado 152
+    constant       ir ao estado 153
+
+
+Estado 50
+
+   56 rel_exp: rel_exp REL_OP • sum_exp
+
+    ID      deslocar, e ir ao estado 145
+    INT     deslocar, e ir ao estado 146
+    FLOAT   deslocar, e ir ao estado 147
+    NIL     deslocar, e ir ao estado 148
+    SUM_OP  deslocar, e ir ao estado 19
+    STRING  deslocar, e ir ao estado 149
+    '('     deslocar, e ir ao estado 150
+
+    sum_exp    ir ao estado 66
+    mul_exp    ir ao estado 31
+    factor     ir ao estado 44
+    immutable  ir ao estado 151
+    call       ir ao estado 152
+    constant   ir ao estado 153
+
+
+Estado 51
+
+   58 sum_exp: sum_exp SUM_OP • mul_exp
+
+    ID      deslocar, e ir ao estado 145
+    INT     deslocar, e ir ao estado 146
+    FLOAT   deslocar, e ir ao estado 147
+    NIL     deslocar, e ir ao estado 148
+    SUM_OP  deslocar, e ir ao estado 19
+    STRING  deslocar, e ir ao estado 149
+    '('     deslocar, e ir ao estado 150
+
+    mul_exp    ir ao estado 67
+    factor     ir ao estado 44
+    immutable  ir ao estado 151
+    call       ir ao estado 152
+    constant   ir ao estado 153
+
+
+Estado 52
+
+   60 mul_exp: mul_exp MUL_OP • factor
+
+    ID      deslocar, e ir ao estado 145
+    INT     deslocar, e ir ao estado 146
+    FLOAT   deslocar, e ir ao estado 147
+    NIL     deslocar, e ir ao estado 148
+    STRING  deslocar, e ir ao estado 149
+    '('     deslocar, e ir ao estado 150
+
+    factor     ir ao estado 68
+    immutable  ir ao estado 151
+    call       ir ao estado 152
+    constant   ir ao estado 153
+
+
+Estado 53
+
+   47 list_exp: factor ':' • factor
+
+    ID      deslocar, e ir ao estado 154
+    INT     deslocar, e ir ao estado 155
+    FLOAT   deslocar, e ir ao estado 156
+    NIL     deslocar, e ir ao estado 157
+    STRING  deslocar, e ir ao estado 158
+    '('     deslocar, e ir ao estado 159
+
+    factor     ir ao estado 69
+    immutable  ir ao estado 160
+    call       ir ao estado 161
+    constant   ir ao estado 162
+
+
+Estado 54
+
+   50 list_exp: factor MAP • factor
+
+    ID      deslocar, e ir ao estado 154
+    INT     deslocar, e ir ao estado 155
+    FLOAT   deslocar, e ir ao estado 156
+    NIL     deslocar, e ir ao estado 157
+    STRING  deslocar, e ir ao estado 158
+    '('     deslocar, e ir ao estado 159
+
+    factor     ir ao estado 70
+    immutable  ir ao estado 160
+    call       ir ao estado 161
+    constant   ir ao estado 162
+
+
+Estado 55
+
+   51 list_exp: factor FILTER • factor
+
+    ID      deslocar, e ir ao estado 154
+    INT     deslocar, e ir ao estado 155
+    FLOAT   deslocar, e ir ao estado 156
+    NIL     deslocar, e ir ao estado 157
+    STRING  deslocar, e ir ao estado 158
+    '('     deslocar, e ir ao estado 159
+
+    factor     ir ao estado 71
+    immutable  ir ao estado 160
+    call       ir ao estado 161
+    constant   ir ao estado 162
+
+
+Estado 56
+
+   15 param_decl: TYPE ID •
+
+    ','  reduzir usando a regra 15 (param_decl)
+    ')'  reduzir usando a regra 15 (param_decl)
+
+
+Estado 57
+
+   34 block_stmt: '{' • stmt_list '}'
+
+    error  deslocar, e ir ao estado 72
+
+    ID           reduzir usando a regra 36 (stmt_list)
+    INT          reduzir usando a regra 36 (stmt_list)
+    FLOAT        reduzir usando a regra 36 (stmt_list)
+    NIL          reduzir usando a regra 36 (stmt_list)
+    IF           reduzir usando a regra 36 (stmt_list)
+    FOR          reduzir usando a regra 36 (stmt_list)
+    RETURN       reduzir usando a regra 36 (stmt_list)
+    TYPE         reduzir usando a regra 36 (stmt_list)
+    WRITE        reduzir usando a regra 36 (stmt_list)
+    WRITELN      reduzir usando a regra 36 (stmt_list)
+    READ         reduzir usando a regra 36 (stmt_list)
+    SUM_OP       reduzir usando a regra 36 (stmt_list)
+    EXCLAMATION  reduzir usando a regra 36 (stmt_list)
+    '?'          reduzir usando a regra 36 (stmt_list)
+    '%'          reduzir usando a regra 36 (stmt_list)
+    STRING       reduzir usando a regra 36 (stmt_list)
+    ';'          reduzir usando a regra 36 (stmt_list)
+    '('          reduzir usando a regra 36 (stmt_list)
+    '{'          reduzir usando a regra 36 (stmt_list)
+    '}'          reduzir usando a regra 36 (stmt_list)
+
+    stmt_list  ir ao estado 73
+
+
+Estado 58
+
+   10 fun_decl: TYPE ID '(' ')' block_stmt •
+
+    $end   reduzir usando a regra 10 (fun_decl)
+    error  reduzir usando a regra 10 (fun_decl)
+    TYPE   reduzir usando a regra 10 (fun_decl)
+
+
+Estado 59
+
+   12 params: params ',' • param_decl
+
+    TYPE  deslocar, e ir ao estado 37
+
+    param_decl  ir ao estado 74
+
+
+Estado 60
+
+    9 fun_decl: TYPE ID '(' params ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 57
+
+    block_stmt  ir ao estado 75
+
+
+Estado 61
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ':'     reduzir usando a regra 69 (call)
+    MAP     reduzir usando a regra 69 (call)
+    FILTER  reduzir usando a regra 69 (call)
+    ';'     reduzir usando a regra 69 (call)
+
+
+Estado 62
+
+   71 args: simple_exp •
+
+    ','  reduzir usando a regra 71 (args)
+    ')'  reduzir usando a regra 71 (args)
+
+
+Estado 63
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 77
+
+
+Estado 64
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ':'     reduzir usando a regra 65 (immutable)
+    MAP     reduzir usando a regra 65 (immutable)
+    FILTER  reduzir usando a regra 65 (immutable)
+    ';'     reduzir usando a regra 65 (immutable)
+
+
+Estado 65
+
+   52 bin_exp: bin_exp LOG_OP unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 52 (bin_exp)
+    ';'     reduzir usando a regra 52 (bin_exp)
+
+
+Estado 66
+
+   56 rel_exp: rel_exp REL_OP sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 51
+
+    REL_OP  reduzir usando a regra 56 (rel_exp)
+    LOG_OP  reduzir usando a regra 56 (rel_exp)
+    ';'     reduzir usando a regra 56 (rel_exp)
+
+
+Estado 67
+
+   58 sum_exp: sum_exp SUM_OP mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 52
+
+    SUM_OP  reduzir usando a regra 58 (sum_exp)
+    REL_OP  reduzir usando a regra 58 (sum_exp)
+    LOG_OP  reduzir usando a regra 58 (sum_exp)
+    ';'     reduzir usando a regra 58 (sum_exp)
+
+
+Estado 68
+
+   60 mul_exp: mul_exp MUL_OP factor •
+
+    MUL_OP  reduzir usando a regra 60 (mul_exp)
+    SUM_OP  reduzir usando a regra 60 (mul_exp)
+    REL_OP  reduzir usando a regra 60 (mul_exp)
+    LOG_OP  reduzir usando a regra 60 (mul_exp)
+    ';'     reduzir usando a regra 60 (mul_exp)
+
+
+Estado 69
+
+   47 list_exp: factor ':' factor •
+
+    ';'  reduzir usando a regra 47 (list_exp)
+
+
+Estado 70
+
+   50 list_exp: factor MAP factor •
+
+    ';'  reduzir usando a regra 50 (list_exp)
+
+
+Estado 71
+
+   51 list_exp: factor FILTER factor •
+
+    ';'  reduzir usando a regra 51 (list_exp)
+
+
+Estado 72
+
+   37 stmt_list: error •
+
+    ID           reduzir usando a regra 37 (stmt_list)
+    INT          reduzir usando a regra 37 (stmt_list)
+    FLOAT        reduzir usando a regra 37 (stmt_list)
+    NIL          reduzir usando a regra 37 (stmt_list)
+    IF           reduzir usando a regra 37 (stmt_list)
+    FOR          reduzir usando a regra 37 (stmt_list)
+    RETURN       reduzir usando a regra 37 (stmt_list)
+    TYPE         reduzir usando a regra 37 (stmt_list)
+    WRITE        reduzir usando a regra 37 (stmt_list)
+    WRITELN      reduzir usando a regra 37 (stmt_list)
+    READ         reduzir usando a regra 37 (stmt_list)
+    SUM_OP       reduzir usando a regra 37 (stmt_list)
+    EXCLAMATION  reduzir usando a regra 37 (stmt_list)
+    '?'          reduzir usando a regra 37 (stmt_list)
+    '%'          reduzir usando a regra 37 (stmt_list)
+    STRING       reduzir usando a regra 37 (stmt_list)
+    ';'          reduzir usando a regra 37 (stmt_list)
+    '('          reduzir usando a regra 37 (stmt_list)
+    '{'          reduzir usando a regra 37 (stmt_list)
+    '}'          reduzir usando a regra 37 (stmt_list)
+
+
+Estado 73
+
+   34 block_stmt: '{' stmt_list • '}'
+   35 stmt_list: stmt_list • statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 79
+    FOR          deslocar, e ir ao estado 80
+    RETURN       deslocar, e ir ao estado 81
+    TYPE         deslocar, e ir ao estado 82
+    WRITE        deslocar, e ir ao estado 83
+    WRITELN      deslocar, e ir ao estado 84
+    READ         deslocar, e ir ao estado 85
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 86
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 203
+    '}'          deslocar, e ir ao estado 87
+
+    var_decl              ir ao estado 88
+    var_decl_with_assing  ir ao estado 89
+    statement             ir ao estado 90
+    for_stmt              ir ao estado 91
+    exp_stmt              ir ao estado 92
+    exp                   ir ao estado 93
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 95
+    if_stmt               ir ao estado 96
+    return_stmt           ir ao estado 97
+    write_stmt            ir ao estado 98
+    writeln_stmt          ir ao estado 99
+    read_stmt             ir ao estado 100
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 74
+
+   12 params: params ',' param_decl •
+
+    ','  reduzir usando a regra 12 (params)
+    ')'  reduzir usando a regra 12 (params)
+
+
+Estado 75
+
+    9 fun_decl: TYPE ID '(' params ')' block_stmt •
+
+    $end   reduzir usando a regra 9 (fun_decl)
+    error  reduzir usando a regra 9 (fun_decl)
+    TYPE   reduzir usando a regra 9 (fun_decl)
+
+
+Estado 76
+
+   70 args: args ',' • simple_exp
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+
+    simple_exp     ir ao estado 102
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    constant       ir ao estado 202
+
+
+Estado 77
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ':'     reduzir usando a regra 68 (call)
+    MAP     reduzir usando a regra 68 (call)
+    FILTER  reduzir usando a regra 68 (call)
+    ';'     reduzir usando a regra 68 (call)
+
+
+Estado 78
+
+   32 assing_exp: ID • ASSIGN simple_exp
+   33           | ID • error
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    error   deslocar, e ir ao estado 103
+    ASSIGN  deslocar, e ir ao estado 104
+    '('     deslocar, e ir ao estado 41
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ':'     reduzir usando a regra 64 (factor)
+    MAP     reduzir usando a regra 64 (factor)
+    FILTER  reduzir usando a regra 64 (factor)
+    ';'     reduzir usando a regra 64 (factor)
+
+
+Estado 79
+
+   38 if_stmt: IF • '(' simple_exp ')' statement
+   39        | IF • '(' simple_exp ')' statement ELSE statement
+
+    '('  deslocar, e ir ao estado 105
+
+
+Estado 80
+
+   26 for_stmt: FOR • '(' assing_exp ';' simple_exp ';' assing_exp ')' block_stmt
+   27         | FOR • '(' error ';' simple_exp ';' assing_exp ')' block_stmt
+
+    '('  deslocar, e ir ao estado 106
+
+
+Estado 81
+
+   40 return_stmt: RETURN • ';'
+   41            | RETURN • exp ';'
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 107
+    '('          deslocar, e ir ao estado 24
+
+    exp            ir ao estado 108
+    assing_exp     ir ao estado 94
+    simple_exp     ir ao estado 101
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 82
+
+    7 var_decl: TYPE • ID ';'
+    8 var_decl_with_assing: TYPE • ID ASSIGN simple_exp ';'
+
+    ID  deslocar, e ir ao estado 109
+
+
+Estado 83
+
+   42 write_stmt: WRITE • '(' simple_exp ')' ';'
+
+    '('  deslocar, e ir ao estado 110
+
+
+Estado 84
+
+   43 writeln_stmt: WRITELN • '(' simple_exp ')' ';'
+
+    '('  deslocar, e ir ao estado 111
+
+
+Estado 85
+
+   44 read_stmt: READ • '(' ID ')' ';'
+
+    '('  deslocar, e ir ao estado 112
+
+
+Estado 86
+
+   29 exp_stmt: ';' •
+
+    ID           reduzir usando a regra 29 (exp_stmt)
+    INT          reduzir usando a regra 29 (exp_stmt)
+    FLOAT        reduzir usando a regra 29 (exp_stmt)
+    NIL          reduzir usando a regra 29 (exp_stmt)
+    IF           reduzir usando a regra 29 (exp_stmt)
+    FOR          reduzir usando a regra 29 (exp_stmt)
+    RETURN       reduzir usando a regra 29 (exp_stmt)
+    TYPE         reduzir usando a regra 29 (exp_stmt)
+    WRITE        reduzir usando a regra 29 (exp_stmt)
+    WRITELN      reduzir usando a regra 29 (exp_stmt)
+    READ         reduzir usando a regra 29 (exp_stmt)
+    SUM_OP       reduzir usando a regra 29 (exp_stmt)
+    EXCLAMATION  reduzir usando a regra 29 (exp_stmt)
+    '?'          reduzir usando a regra 29 (exp_stmt)
+    '%'          reduzir usando a regra 29 (exp_stmt)
+    STRING       reduzir usando a regra 29 (exp_stmt)
+    ';'          reduzir usando a regra 29 (exp_stmt)
+    '('          reduzir usando a regra 29 (exp_stmt)
+    '{'          reduzir usando a regra 29 (exp_stmt)
+    '}'          reduzir usando a regra 29 (exp_stmt)
+
+
+Estado 87
+
+   34 block_stmt: '{' stmt_list '}' •
+
+    $end   reduzir usando a regra 34 (block_stmt)
+    error  reduzir usando a regra 34 (block_stmt)
+    TYPE   reduzir usando a regra 34 (block_stmt)
+
+
+Estado 88
+
+   23 statement: var_decl •
+
+    ID           reduzir usando a regra 23 (statement)
+    INT          reduzir usando a regra 23 (statement)
+    FLOAT        reduzir usando a regra 23 (statement)
+    NIL          reduzir usando a regra 23 (statement)
+    IF           reduzir usando a regra 23 (statement)
+    FOR          reduzir usando a regra 23 (statement)
+    RETURN       reduzir usando a regra 23 (statement)
+    TYPE         reduzir usando a regra 23 (statement)
+    WRITE        reduzir usando a regra 23 (statement)
+    WRITELN      reduzir usando a regra 23 (statement)
+    READ         reduzir usando a regra 23 (statement)
+    SUM_OP       reduzir usando a regra 23 (statement)
+    EXCLAMATION  reduzir usando a regra 23 (statement)
+    '?'          reduzir usando a regra 23 (statement)
+    '%'          reduzir usando a regra 23 (statement)
+    STRING       reduzir usando a regra 23 (statement)
+    ';'          reduzir usando a regra 23 (statement)
+    '('          reduzir usando a regra 23 (statement)
+    '{'          reduzir usando a regra 23 (statement)
+    '}'          reduzir usando a regra 23 (statement)
+
+
+Estado 89
+
+   24 statement: var_decl_with_assing •
+
+    ID           reduzir usando a regra 24 (statement)
+    INT          reduzir usando a regra 24 (statement)
+    FLOAT        reduzir usando a regra 24 (statement)
+    NIL          reduzir usando a regra 24 (statement)
+    IF           reduzir usando a regra 24 (statement)
+    FOR          reduzir usando a regra 24 (statement)
+    RETURN       reduzir usando a regra 24 (statement)
+    TYPE         reduzir usando a regra 24 (statement)
+    WRITE        reduzir usando a regra 24 (statement)
+    WRITELN      reduzir usando a regra 24 (statement)
+    READ         reduzir usando a regra 24 (statement)
+    SUM_OP       reduzir usando a regra 24 (statement)
+    EXCLAMATION  reduzir usando a regra 24 (statement)
+    '?'          reduzir usando a regra 24 (statement)
+    '%'          reduzir usando a regra 24 (statement)
+    STRING       reduzir usando a regra 24 (statement)
+    ';'          reduzir usando a regra 24 (statement)
+    '('          reduzir usando a regra 24 (statement)
+    '{'          reduzir usando a regra 24 (statement)
+    '}'          reduzir usando a regra 24 (statement)
+
+
+Estado 90
+
+   35 stmt_list: stmt_list statement •
+
+    ID           reduzir usando a regra 35 (stmt_list)
+    INT          reduzir usando a regra 35 (stmt_list)
+    FLOAT        reduzir usando a regra 35 (stmt_list)
+    NIL          reduzir usando a regra 35 (stmt_list)
+    IF           reduzir usando a regra 35 (stmt_list)
+    FOR          reduzir usando a regra 35 (stmt_list)
+    RETURN       reduzir usando a regra 35 (stmt_list)
+    TYPE         reduzir usando a regra 35 (stmt_list)
+    WRITE        reduzir usando a regra 35 (stmt_list)
+    WRITELN      reduzir usando a regra 35 (stmt_list)
+    READ         reduzir usando a regra 35 (stmt_list)
+    SUM_OP       reduzir usando a regra 35 (stmt_list)
+    EXCLAMATION  reduzir usando a regra 35 (stmt_list)
+    '?'          reduzir usando a regra 35 (stmt_list)
+    '%'          reduzir usando a regra 35 (stmt_list)
+    STRING       reduzir usando a regra 35 (stmt_list)
+    ';'          reduzir usando a regra 35 (stmt_list)
+    '('          reduzir usando a regra 35 (stmt_list)
+    '{'          reduzir usando a regra 35 (stmt_list)
+    '}'          reduzir usando a regra 35 (stmt_list)
+
+
+Estado 91
+
+   25 statement: for_stmt •
+
+    ID           reduzir usando a regra 25 (statement)
+    INT          reduzir usando a regra 25 (statement)
+    FLOAT        reduzir usando a regra 25 (statement)
+    NIL          reduzir usando a regra 25 (statement)
+    IF           reduzir usando a regra 25 (statement)
+    FOR          reduzir usando a regra 25 (statement)
+    RETURN       reduzir usando a regra 25 (statement)
+    TYPE         reduzir usando a regra 25 (statement)
+    WRITE        reduzir usando a regra 25 (statement)
+    WRITELN      reduzir usando a regra 25 (statement)
+    READ         reduzir usando a regra 25 (statement)
+    SUM_OP       reduzir usando a regra 25 (statement)
+    EXCLAMATION  reduzir usando a regra 25 (statement)
+    '?'          reduzir usando a regra 25 (statement)
+    '%'          reduzir usando a regra 25 (statement)
+    STRING       reduzir usando a regra 25 (statement)
+    ';'          reduzir usando a regra 25 (statement)
+    '('          reduzir usando a regra 25 (statement)
+    '{'          reduzir usando a regra 25 (statement)
+    '}'          reduzir usando a regra 25 (statement)
+
+
+Estado 92
+
+   16 statement: exp_stmt •
+
+    ID           reduzir usando a regra 16 (statement)
+    INT          reduzir usando a regra 16 (statement)
+    FLOAT        reduzir usando a regra 16 (statement)
+    NIL          reduzir usando a regra 16 (statement)
+    IF           reduzir usando a regra 16 (statement)
+    FOR          reduzir usando a regra 16 (statement)
+    RETURN       reduzir usando a regra 16 (statement)
+    TYPE         reduzir usando a regra 16 (statement)
+    WRITE        reduzir usando a regra 16 (statement)
+    WRITELN      reduzir usando a regra 16 (statement)
+    READ         reduzir usando a regra 16 (statement)
+    SUM_OP       reduzir usando a regra 16 (statement)
+    EXCLAMATION  reduzir usando a regra 16 (statement)
+    '?'          reduzir usando a regra 16 (statement)
+    '%'          reduzir usando a regra 16 (statement)
+    STRING       reduzir usando a regra 16 (statement)
+    ';'          reduzir usando a regra 16 (statement)
+    '('          reduzir usando a regra 16 (statement)
+    '{'          reduzir usando a regra 16 (statement)
+    '}'          reduzir usando a regra 16 (statement)
+
+
+Estado 93
+
+   28 exp_stmt: exp • ';'
+
+    ';'  deslocar, e ir ao estado 113
+
+
+Estado 94
+
+   30 exp: assing_exp •
+
+    ';'  reduzir usando a regra 30 (exp)
+
+
+Estado 95
+
+   17 statement: block_stmt •
+
+    ID           reduzir usando a regra 17 (statement)
+    INT          reduzir usando a regra 17 (statement)
+    FLOAT        reduzir usando a regra 17 (statement)
+    NIL          reduzir usando a regra 17 (statement)
+    IF           reduzir usando a regra 17 (statement)
+    FOR          reduzir usando a regra 17 (statement)
+    RETURN       reduzir usando a regra 17 (statement)
+    TYPE         reduzir usando a regra 17 (statement)
+    WRITE        reduzir usando a regra 17 (statement)
+    WRITELN      reduzir usando a regra 17 (statement)
+    READ         reduzir usando a regra 17 (statement)
+    SUM_OP       reduzir usando a regra 17 (statement)
+    EXCLAMATION  reduzir usando a regra 17 (statement)
+    '?'          reduzir usando a regra 17 (statement)
+    '%'          reduzir usando a regra 17 (statement)
+    STRING       reduzir usando a regra 17 (statement)
+    ';'          reduzir usando a regra 17 (statement)
+    '('          reduzir usando a regra 17 (statement)
+    '{'          reduzir usando a regra 17 (statement)
+    '}'          reduzir usando a regra 17 (statement)
+
+
+Estado 96
+
+   18 statement: if_stmt •
+
+    ID           reduzir usando a regra 18 (statement)
+    INT          reduzir usando a regra 18 (statement)
+    FLOAT        reduzir usando a regra 18 (statement)
+    NIL          reduzir usando a regra 18 (statement)
+    IF           reduzir usando a regra 18 (statement)
+    FOR          reduzir usando a regra 18 (statement)
+    RETURN       reduzir usando a regra 18 (statement)
+    TYPE         reduzir usando a regra 18 (statement)
+    WRITE        reduzir usando a regra 18 (statement)
+    WRITELN      reduzir usando a regra 18 (statement)
+    READ         reduzir usando a regra 18 (statement)
+    SUM_OP       reduzir usando a regra 18 (statement)
+    EXCLAMATION  reduzir usando a regra 18 (statement)
+    '?'          reduzir usando a regra 18 (statement)
+    '%'          reduzir usando a regra 18 (statement)
+    STRING       reduzir usando a regra 18 (statement)
+    ';'          reduzir usando a regra 18 (statement)
+    '('          reduzir usando a regra 18 (statement)
+    '{'          reduzir usando a regra 18 (statement)
+    '}'          reduzir usando a regra 18 (statement)
+
+
+Estado 97
+
+   19 statement: return_stmt •
+
+    ID           reduzir usando a regra 19 (statement)
+    INT          reduzir usando a regra 19 (statement)
+    FLOAT        reduzir usando a regra 19 (statement)
+    NIL          reduzir usando a regra 19 (statement)
+    IF           reduzir usando a regra 19 (statement)
+    FOR          reduzir usando a regra 19 (statement)
+    RETURN       reduzir usando a regra 19 (statement)
+    TYPE         reduzir usando a regra 19 (statement)
+    WRITE        reduzir usando a regra 19 (statement)
+    WRITELN      reduzir usando a regra 19 (statement)
+    READ         reduzir usando a regra 19 (statement)
+    SUM_OP       reduzir usando a regra 19 (statement)
+    EXCLAMATION  reduzir usando a regra 19 (statement)
+    '?'          reduzir usando a regra 19 (statement)
+    '%'          reduzir usando a regra 19 (statement)
+    STRING       reduzir usando a regra 19 (statement)
+    ';'          reduzir usando a regra 19 (statement)
+    '('          reduzir usando a regra 19 (statement)
+    '{'          reduzir usando a regra 19 (statement)
+    '}'          reduzir usando a regra 19 (statement)
+
+
+Estado 98
+
+   20 statement: write_stmt •
+
+    ID           reduzir usando a regra 20 (statement)
+    INT          reduzir usando a regra 20 (statement)
+    FLOAT        reduzir usando a regra 20 (statement)
+    NIL          reduzir usando a regra 20 (statement)
+    IF           reduzir usando a regra 20 (statement)
+    FOR          reduzir usando a regra 20 (statement)
+    RETURN       reduzir usando a regra 20 (statement)
+    TYPE         reduzir usando a regra 20 (statement)
+    WRITE        reduzir usando a regra 20 (statement)
+    WRITELN      reduzir usando a regra 20 (statement)
+    READ         reduzir usando a regra 20 (statement)
+    SUM_OP       reduzir usando a regra 20 (statement)
+    EXCLAMATION  reduzir usando a regra 20 (statement)
+    '?'          reduzir usando a regra 20 (statement)
+    '%'          reduzir usando a regra 20 (statement)
+    STRING       reduzir usando a regra 20 (statement)
+    ';'          reduzir usando a regra 20 (statement)
+    '('          reduzir usando a regra 20 (statement)
+    '{'          reduzir usando a regra 20 (statement)
+    '}'          reduzir usando a regra 20 (statement)
+
+
+Estado 99
+
+   21 statement: writeln_stmt •
+
+    ID           reduzir usando a regra 21 (statement)
+    INT          reduzir usando a regra 21 (statement)
+    FLOAT        reduzir usando a regra 21 (statement)
+    NIL          reduzir usando a regra 21 (statement)
+    IF           reduzir usando a regra 21 (statement)
+    FOR          reduzir usando a regra 21 (statement)
+    RETURN       reduzir usando a regra 21 (statement)
+    TYPE         reduzir usando a regra 21 (statement)
+    WRITE        reduzir usando a regra 21 (statement)
+    WRITELN      reduzir usando a regra 21 (statement)
+    READ         reduzir usando a regra 21 (statement)
+    SUM_OP       reduzir usando a regra 21 (statement)
+    EXCLAMATION  reduzir usando a regra 21 (statement)
+    '?'          reduzir usando a regra 21 (statement)
+    '%'          reduzir usando a regra 21 (statement)
+    STRING       reduzir usando a regra 21 (statement)
+    ';'          reduzir usando a regra 21 (statement)
+    '('          reduzir usando a regra 21 (statement)
+    '{'          reduzir usando a regra 21 (statement)
+    '}'          reduzir usando a regra 21 (statement)
+
+
+Estado 100
+
+   22 statement: read_stmt •
+
+    ID           reduzir usando a regra 22 (statement)
+    INT          reduzir usando a regra 22 (statement)
+    FLOAT        reduzir usando a regra 22 (statement)
+    NIL          reduzir usando a regra 22 (statement)
+    IF           reduzir usando a regra 22 (statement)
+    FOR          reduzir usando a regra 22 (statement)
+    RETURN       reduzir usando a regra 22 (statement)
+    TYPE         reduzir usando a regra 22 (statement)
+    WRITE        reduzir usando a regra 22 (statement)
+    WRITELN      reduzir usando a regra 22 (statement)
+    READ         reduzir usando a regra 22 (statement)
+    SUM_OP       reduzir usando a regra 22 (statement)
+    EXCLAMATION  reduzir usando a regra 22 (statement)
+    '?'          reduzir usando a regra 22 (statement)
+    '%'          reduzir usando a regra 22 (statement)
+    STRING       reduzir usando a regra 22 (statement)
+    ';'          reduzir usando a regra 22 (statement)
+    '('          reduzir usando a regra 22 (statement)
+    '{'          reduzir usando a regra 22 (statement)
+    '}'          reduzir usando a regra 22 (statement)
+
+
+Estado 101
+
+   31 exp: simple_exp •
+
+    ';'  reduzir usando a regra 31 (exp)
+
+
+Estado 102
+
+   70 args: args ',' simple_exp •
+
+    ','  reduzir usando a regra 70 (args)
+    ')'  reduzir usando a regra 70 (args)
+
+
+Estado 103
+
+   33 assing_exp: ID error •
+
+    ';'  reduzir usando a regra 33 (assing_exp)
+
+
+Estado 104
+
+   32 assing_exp: ID ASSIGN • simple_exp
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 114
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 105
+
+   38 if_stmt: IF '(' • simple_exp ')' statement
+   39        | IF '(' • simple_exp ')' statement ELSE statement
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 115
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 106
+
+   26 for_stmt: FOR '(' • assing_exp ';' simple_exp ';' assing_exp ')' block_stmt
+   27         | FOR '(' • error ';' simple_exp ';' assing_exp ')' block_stmt
+
+    error  deslocar, e ir ao estado 116
+    ID     deslocar, e ir ao estado 117
+
+    assing_exp  ir ao estado 118
+
+
+Estado 107
+
+   40 return_stmt: RETURN ';' •
+
+    ID           reduzir usando a regra 40 (return_stmt)
+    INT          reduzir usando a regra 40 (return_stmt)
+    FLOAT        reduzir usando a regra 40 (return_stmt)
+    NIL          reduzir usando a regra 40 (return_stmt)
+    IF           reduzir usando a regra 40 (return_stmt)
+    FOR          reduzir usando a regra 40 (return_stmt)
+    RETURN       reduzir usando a regra 40 (return_stmt)
+    TYPE         reduzir usando a regra 40 (return_stmt)
+    WRITE        reduzir usando a regra 40 (return_stmt)
+    WRITELN      reduzir usando a regra 40 (return_stmt)
+    READ         reduzir usando a regra 40 (return_stmt)
+    SUM_OP       reduzir usando a regra 40 (return_stmt)
+    EXCLAMATION  reduzir usando a regra 40 (return_stmt)
+    '?'          reduzir usando a regra 40 (return_stmt)
+    '%'          reduzir usando a regra 40 (return_stmt)
+    STRING       reduzir usando a regra 40 (return_stmt)
+    ';'          reduzir usando a regra 40 (return_stmt)
+    '('          reduzir usando a regra 40 (return_stmt)
+    '{'          reduzir usando a regra 40 (return_stmt)
+    '}'          reduzir usando a regra 40 (return_stmt)
+
+
+Estado 108
+
+   41 return_stmt: RETURN exp • ';'
+
+    ';'  deslocar, e ir ao estado 119
+
+
+Estado 109
+
+    7 var_decl: TYPE ID • ';'
+    8 var_decl_with_assing: TYPE ID • ASSIGN simple_exp ';'
+
+    ASSIGN  deslocar, e ir ao estado 204
+    ';'     deslocar, e ir ao estado 205
+
+
+Estado 110
+
+   42 write_stmt: WRITE '(' • simple_exp ')' ';'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 120
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 111
+
+   43 writeln_stmt: WRITELN '(' • simple_exp ')' ';'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 121
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 112
+
+   44 read_stmt: READ '(' • ID ')' ';'
+
+    ID  deslocar, e ir ao estado 122
+
+
+Estado 113
+
+   28 exp_stmt: exp ';' •
+
+    ID           reduzir usando a regra 28 (exp_stmt)
+    INT          reduzir usando a regra 28 (exp_stmt)
+    FLOAT        reduzir usando a regra 28 (exp_stmt)
+    NIL          reduzir usando a regra 28 (exp_stmt)
+    IF           reduzir usando a regra 28 (exp_stmt)
+    FOR          reduzir usando a regra 28 (exp_stmt)
+    RETURN       reduzir usando a regra 28 (exp_stmt)
+    TYPE         reduzir usando a regra 28 (exp_stmt)
+    WRITE        reduzir usando a regra 28 (exp_stmt)
+    WRITELN      reduzir usando a regra 28 (exp_stmt)
+    READ         reduzir usando a regra 28 (exp_stmt)
+    SUM_OP       reduzir usando a regra 28 (exp_stmt)
+    EXCLAMATION  reduzir usando a regra 28 (exp_stmt)
+    '?'          reduzir usando a regra 28 (exp_stmt)
+    '%'          reduzir usando a regra 28 (exp_stmt)
+    STRING       reduzir usando a regra 28 (exp_stmt)
+    ';'          reduzir usando a regra 28 (exp_stmt)
+    '('          reduzir usando a regra 28 (exp_stmt)
+    '{'          reduzir usando a regra 28 (exp_stmt)
+    '}'          reduzir usando a regra 28 (exp_stmt)
+
+
+Estado 114
+
+   32 assing_exp: ID ASSIGN simple_exp •
+
+    ';'  reduzir usando a regra 32 (assing_exp)
+
+
+Estado 115
+
+   38 if_stmt: IF '(' simple_exp • ')' statement
+   39        | IF '(' simple_exp • ')' statement ELSE statement
+
+    ')'  deslocar, e ir ao estado 123
+
+
+Estado 116
+
+   27 for_stmt: FOR '(' error • ';' simple_exp ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 124
+
+
+Estado 117
+
+   32 assing_exp: ID • ASSIGN simple_exp
+   33           | ID • error
+
+    error   deslocar, e ir ao estado 103
+    ASSIGN  deslocar, e ir ao estado 104
+
+
+Estado 118
+
+   26 for_stmt: FOR '(' assing_exp • ';' simple_exp ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 125
+
+
+Estado 119
+
+   41 return_stmt: RETURN exp ';' •
+
+    ID           reduzir usando a regra 41 (return_stmt)
+    INT          reduzir usando a regra 41 (return_stmt)
+    FLOAT        reduzir usando a regra 41 (return_stmt)
+    NIL          reduzir usando a regra 41 (return_stmt)
+    IF           reduzir usando a regra 41 (return_stmt)
+    FOR          reduzir usando a regra 41 (return_stmt)
+    RETURN       reduzir usando a regra 41 (return_stmt)
+    TYPE         reduzir usando a regra 41 (return_stmt)
+    WRITE        reduzir usando a regra 41 (return_stmt)
+    WRITELN      reduzir usando a regra 41 (return_stmt)
+    READ         reduzir usando a regra 41 (return_stmt)
+    SUM_OP       reduzir usando a regra 41 (return_stmt)
+    EXCLAMATION  reduzir usando a regra 41 (return_stmt)
+    '?'          reduzir usando a regra 41 (return_stmt)
+    '%'          reduzir usando a regra 41 (return_stmt)
+    STRING       reduzir usando a regra 41 (return_stmt)
+    ';'          reduzir usando a regra 41 (return_stmt)
+    '('          reduzir usando a regra 41 (return_stmt)
+    '{'          reduzir usando a regra 41 (return_stmt)
+    '}'          reduzir usando a regra 41 (return_stmt)
+
+
+Estado 120
+
+   42 write_stmt: WRITE '(' simple_exp • ')' ';'
+
+    ')'  deslocar, e ir ao estado 126
+
+
+Estado 121
+
+   43 writeln_stmt: WRITELN '(' simple_exp • ')' ';'
+
+    ')'  deslocar, e ir ao estado 127
+
+
+Estado 122
+
+   44 read_stmt: READ '(' ID • ')' ';'
+
+    ')'  deslocar, e ir ao estado 128
+
+
+Estado 123
+
+   38 if_stmt: IF '(' simple_exp ')' • statement
+   39        | IF '(' simple_exp ')' • statement ELSE statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 206
+    FOR          deslocar, e ir ao estado 207
+    RETURN       deslocar, e ir ao estado 208
+    TYPE         deslocar, e ir ao estado 209
+    WRITE        deslocar, e ir ao estado 210
+    WRITELN      deslocar, e ir ao estado 211
+    READ         deslocar, e ir ao estado 212
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 213
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 214
+
+    var_decl              ir ao estado 215
+    var_decl_with_assing  ir ao estado 216
+    statement             ir ao estado 129
+    for_stmt              ir ao estado 217
+    exp_stmt              ir ao estado 218
+    exp                   ir ao estado 219
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 220
+    if_stmt               ir ao estado 221
+    return_stmt           ir ao estado 222
+    write_stmt            ir ao estado 223
+    writeln_stmt          ir ao estado 224
+    read_stmt             ir ao estado 225
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 124
+
+   27 for_stmt: FOR '(' error ';' • simple_exp ';' assing_exp ')' block_stmt
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 130
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 125
+
+   26 for_stmt: FOR '(' assing_exp ';' • simple_exp ';' assing_exp ')' block_stmt
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 131
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 126
+
+   42 write_stmt: WRITE '(' simple_exp ')' • ';'
+
+    ';'  deslocar, e ir ao estado 132
+
+
+Estado 127
+
+   43 writeln_stmt: WRITELN '(' simple_exp ')' • ';'
+
+    ';'  deslocar, e ir ao estado 133
+
+
+Estado 128
+
+   44 read_stmt: READ '(' ID ')' • ';'
+
+    ';'  deslocar, e ir ao estado 134
+
+
+Estado 129
+
+   38 if_stmt: IF '(' simple_exp ')' statement •
+   39        | IF '(' simple_exp ')' statement • ELSE statement
+
+    ELSE  deslocar, e ir ao estado 135
+
+    ID           reduzir usando a regra 38 (if_stmt)
+    INT          reduzir usando a regra 38 (if_stmt)
+    FLOAT        reduzir usando a regra 38 (if_stmt)
+    NIL          reduzir usando a regra 38 (if_stmt)
+    IF           reduzir usando a regra 38 (if_stmt)
+    FOR          reduzir usando a regra 38 (if_stmt)
+    RETURN       reduzir usando a regra 38 (if_stmt)
+    TYPE         reduzir usando a regra 38 (if_stmt)
+    WRITE        reduzir usando a regra 38 (if_stmt)
+    WRITELN      reduzir usando a regra 38 (if_stmt)
+    READ         reduzir usando a regra 38 (if_stmt)
+    SUM_OP       reduzir usando a regra 38 (if_stmt)
+    EXCLAMATION  reduzir usando a regra 38 (if_stmt)
+    '?'          reduzir usando a regra 38 (if_stmt)
+    '%'          reduzir usando a regra 38 (if_stmt)
+    STRING       reduzir usando a regra 38 (if_stmt)
+    ';'          reduzir usando a regra 38 (if_stmt)
+    '('          reduzir usando a regra 38 (if_stmt)
+    '{'          reduzir usando a regra 38 (if_stmt)
+    '}'          reduzir usando a regra 38 (if_stmt)
+
+
+Estado 130
+
+   27 for_stmt: FOR '(' error ';' simple_exp • ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 136
+
+
+Estado 131
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp • ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 137
+
+
+Estado 132
+
+   42 write_stmt: WRITE '(' simple_exp ')' ';' •
+
+    ID           reduzir usando a regra 42 (write_stmt)
+    INT          reduzir usando a regra 42 (write_stmt)
+    FLOAT        reduzir usando a regra 42 (write_stmt)
+    NIL          reduzir usando a regra 42 (write_stmt)
+    IF           reduzir usando a regra 42 (write_stmt)
+    FOR          reduzir usando a regra 42 (write_stmt)
+    RETURN       reduzir usando a regra 42 (write_stmt)
+    TYPE         reduzir usando a regra 42 (write_stmt)
+    WRITE        reduzir usando a regra 42 (write_stmt)
+    WRITELN      reduzir usando a regra 42 (write_stmt)
+    READ         reduzir usando a regra 42 (write_stmt)
+    SUM_OP       reduzir usando a regra 42 (write_stmt)
+    EXCLAMATION  reduzir usando a regra 42 (write_stmt)
+    '?'          reduzir usando a regra 42 (write_stmt)
+    '%'          reduzir usando a regra 42 (write_stmt)
+    STRING       reduzir usando a regra 42 (write_stmt)
+    ';'          reduzir usando a regra 42 (write_stmt)
+    '('          reduzir usando a regra 42 (write_stmt)
+    '{'          reduzir usando a regra 42 (write_stmt)
+    '}'          reduzir usando a regra 42 (write_stmt)
+
+
+Estado 133
+
+   43 writeln_stmt: WRITELN '(' simple_exp ')' ';' •
+
+    ID           reduzir usando a regra 43 (writeln_stmt)
+    INT          reduzir usando a regra 43 (writeln_stmt)
+    FLOAT        reduzir usando a regra 43 (writeln_stmt)
+    NIL          reduzir usando a regra 43 (writeln_stmt)
+    IF           reduzir usando a regra 43 (writeln_stmt)
+    FOR          reduzir usando a regra 43 (writeln_stmt)
+    RETURN       reduzir usando a regra 43 (writeln_stmt)
+    TYPE         reduzir usando a regra 43 (writeln_stmt)
+    WRITE        reduzir usando a regra 43 (writeln_stmt)
+    WRITELN      reduzir usando a regra 43 (writeln_stmt)
+    READ         reduzir usando a regra 43 (writeln_stmt)
+    SUM_OP       reduzir usando a regra 43 (writeln_stmt)
+    EXCLAMATION  reduzir usando a regra 43 (writeln_stmt)
+    '?'          reduzir usando a regra 43 (writeln_stmt)
+    '%'          reduzir usando a regra 43 (writeln_stmt)
+    STRING       reduzir usando a regra 43 (writeln_stmt)
+    ';'          reduzir usando a regra 43 (writeln_stmt)
+    '('          reduzir usando a regra 43 (writeln_stmt)
+    '{'          reduzir usando a regra 43 (writeln_stmt)
+    '}'          reduzir usando a regra 43 (writeln_stmt)
+
+
+Estado 134
+
+   44 read_stmt: READ '(' ID ')' ';' •
+
+    ID           reduzir usando a regra 44 (read_stmt)
+    INT          reduzir usando a regra 44 (read_stmt)
+    FLOAT        reduzir usando a regra 44 (read_stmt)
+    NIL          reduzir usando a regra 44 (read_stmt)
+    IF           reduzir usando a regra 44 (read_stmt)
+    FOR          reduzir usando a regra 44 (read_stmt)
+    RETURN       reduzir usando a regra 44 (read_stmt)
+    TYPE         reduzir usando a regra 44 (read_stmt)
+    WRITE        reduzir usando a regra 44 (read_stmt)
+    WRITELN      reduzir usando a regra 44 (read_stmt)
+    READ         reduzir usando a regra 44 (read_stmt)
+    SUM_OP       reduzir usando a regra 44 (read_stmt)
+    EXCLAMATION  reduzir usando a regra 44 (read_stmt)
+    '?'          reduzir usando a regra 44 (read_stmt)
+    '%'          reduzir usando a regra 44 (read_stmt)
+    STRING       reduzir usando a regra 44 (read_stmt)
+    ';'          reduzir usando a regra 44 (read_stmt)
+    '('          reduzir usando a regra 44 (read_stmt)
+    '{'          reduzir usando a regra 44 (read_stmt)
+    '}'          reduzir usando a regra 44 (read_stmt)
+
+
+Estado 135
+
+   39 if_stmt: IF '(' simple_exp ')' statement ELSE • statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 79
+    FOR          deslocar, e ir ao estado 80
+    RETURN       deslocar, e ir ao estado 81
+    TYPE         deslocar, e ir ao estado 82
+    WRITE        deslocar, e ir ao estado 83
+    WRITELN      deslocar, e ir ao estado 84
+    READ         deslocar, e ir ao estado 85
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 86
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 203
+
+    var_decl              ir ao estado 88
+    var_decl_with_assing  ir ao estado 89
+    statement             ir ao estado 138
+    for_stmt              ir ao estado 91
+    exp_stmt              ir ao estado 92
+    exp                   ir ao estado 93
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 95
+    if_stmt               ir ao estado 96
+    return_stmt           ir ao estado 97
+    write_stmt            ir ao estado 98
+    writeln_stmt          ir ao estado 99
+    read_stmt             ir ao estado 100
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 136
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' • assing_exp ')' block_stmt
+
+    ID  deslocar, e ir ao estado 226
+
+    assing_exp  ir ao estado 139
+
+
+Estado 137
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' • assing_exp ')' block_stmt
+
+    ID  deslocar, e ir ao estado 226
+
+    assing_exp  ir ao estado 140
+
+
+Estado 138
+
+   39 if_stmt: IF '(' simple_exp ')' statement ELSE statement •
+
+    ID           reduzir usando a regra 39 (if_stmt)
+    INT          reduzir usando a regra 39 (if_stmt)
+    FLOAT        reduzir usando a regra 39 (if_stmt)
+    NIL          reduzir usando a regra 39 (if_stmt)
+    IF           reduzir usando a regra 39 (if_stmt)
+    FOR          reduzir usando a regra 39 (if_stmt)
+    RETURN       reduzir usando a regra 39 (if_stmt)
+    TYPE         reduzir usando a regra 39 (if_stmt)
+    WRITE        reduzir usando a regra 39 (if_stmt)
+    WRITELN      reduzir usando a regra 39 (if_stmt)
+    READ         reduzir usando a regra 39 (if_stmt)
+    SUM_OP       reduzir usando a regra 39 (if_stmt)
+    EXCLAMATION  reduzir usando a regra 39 (if_stmt)
+    '?'          reduzir usando a regra 39 (if_stmt)
+    '%'          reduzir usando a regra 39 (if_stmt)
+    STRING       reduzir usando a regra 39 (if_stmt)
+    ';'          reduzir usando a regra 39 (if_stmt)
+    '('          reduzir usando a regra 39 (if_stmt)
+    '{'          reduzir usando a regra 39 (if_stmt)
+    '}'          reduzir usando a regra 39 (if_stmt)
+
+
+Estado 139
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp • ')' block_stmt
+
+    ')'  deslocar, e ir ao estado 141
+
+
+Estado 140
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp • ')' block_stmt
+
+    ')'  deslocar, e ir ao estado 142
+
+
+Estado 141
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 203
+
+    block_stmt  ir ao estado 143
+
+
+Estado 142
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 203
+
+    block_stmt  ir ao estado 144
+
+
+Estado 143
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp ')' block_stmt •
+
+    ID           reduzir usando a regra 27 (for_stmt)
+    INT          reduzir usando a regra 27 (for_stmt)
+    FLOAT        reduzir usando a regra 27 (for_stmt)
+    NIL          reduzir usando a regra 27 (for_stmt)
+    IF           reduzir usando a regra 27 (for_stmt)
+    FOR          reduzir usando a regra 27 (for_stmt)
+    RETURN       reduzir usando a regra 27 (for_stmt)
+    TYPE         reduzir usando a regra 27 (for_stmt)
+    WRITE        reduzir usando a regra 27 (for_stmt)
+    WRITELN      reduzir usando a regra 27 (for_stmt)
+    READ         reduzir usando a regra 27 (for_stmt)
+    SUM_OP       reduzir usando a regra 27 (for_stmt)
+    EXCLAMATION  reduzir usando a regra 27 (for_stmt)
+    '?'          reduzir usando a regra 27 (for_stmt)
+    '%'          reduzir usando a regra 27 (for_stmt)
+    STRING       reduzir usando a regra 27 (for_stmt)
+    ';'          reduzir usando a regra 27 (for_stmt)
+    '('          reduzir usando a regra 27 (for_stmt)
+    '{'          reduzir usando a regra 27 (for_stmt)
+    '}'          reduzir usando a regra 27 (for_stmt)
+
+
+Estado 144
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp ')' block_stmt •
+
+    ID           reduzir usando a regra 26 (for_stmt)
+    INT          reduzir usando a regra 26 (for_stmt)
+    FLOAT        reduzir usando a regra 26 (for_stmt)
+    NIL          reduzir usando a regra 26 (for_stmt)
+    IF           reduzir usando a regra 26 (for_stmt)
+    FOR          reduzir usando a regra 26 (for_stmt)
+    RETURN       reduzir usando a regra 26 (for_stmt)
+    TYPE         reduzir usando a regra 26 (for_stmt)
+    WRITE        reduzir usando a regra 26 (for_stmt)
+    WRITELN      reduzir usando a regra 26 (for_stmt)
+    READ         reduzir usando a regra 26 (for_stmt)
+    SUM_OP       reduzir usando a regra 26 (for_stmt)
+    EXCLAMATION  reduzir usando a regra 26 (for_stmt)
+    '?'          reduzir usando a regra 26 (for_stmt)
+    '%'          reduzir usando a regra 26 (for_stmt)
+    STRING       reduzir usando a regra 26 (for_stmt)
+    ';'          reduzir usando a regra 26 (for_stmt)
+    '('          reduzir usando a regra 26 (for_stmt)
+    '{'          reduzir usando a regra 26 (for_stmt)
+    '}'          reduzir usando a regra 26 (for_stmt)
+
+
+Estado 145
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 227
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ';'     reduzir usando a regra 64 (factor)
+
+
+Estado 146
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ';'     reduzir usando a regra 73 (constant)
+
+
+Estado 147
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ';'     reduzir usando a regra 74 (constant)
+
+
+Estado 148
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ';'     reduzir usando a regra 72 (constant)
+
+
+Estado 149
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ';'     reduzir usando a regra 75 (constant)
+
+
+Estado 150
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 228
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 151
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ';'     reduzir usando a regra 63 (factor)
+
+
+Estado 152
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ';'     reduzir usando a regra 66 (immutable)
+
+
+Estado 153
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ';'     reduzir usando a regra 67 (immutable)
+
+
+Estado 154
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 229
+
+    ';'  reduzir usando a regra 64 (factor)
+
+
+Estado 155
+
+   73 constant: INT •
+
+    ';'  reduzir usando a regra 73 (constant)
+
+
+Estado 156
+
+   74 constant: FLOAT •
+
+    ';'  reduzir usando a regra 74 (constant)
+
+
+Estado 157
+
+   72 constant: NIL •
+
+    ';'  reduzir usando a regra 72 (constant)
+
+
+Estado 158
+
+   75 constant: STRING •
+
+    ';'  reduzir usando a regra 75 (constant)
+
+
+Estado 159
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 230
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 160
+
+   63 factor: immutable •
+
+    ';'  reduzir usando a regra 63 (factor)
+
+
+Estado 161
+
+   66 immutable: call •
+
+    ';'  reduzir usando a regra 66 (immutable)
+
+
+Estado 162
+
+   67 immutable: constant •
+
+    ';'  reduzir usando a regra 67 (immutable)
+
+
+Estado 163
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 231
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ':'     reduzir usando a regra 64 (factor)
+    MAP     reduzir usando a regra 64 (factor)
+    FILTER  reduzir usando a regra 64 (factor)
+    ')'     reduzir usando a regra 64 (factor)
+
+
+Estado 164
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ':'     reduzir usando a regra 73 (constant)
+    MAP     reduzir usando a regra 73 (constant)
+    FILTER  reduzir usando a regra 73 (constant)
+    ')'     reduzir usando a regra 73 (constant)
+
+
+Estado 165
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ':'     reduzir usando a regra 74 (constant)
+    MAP     reduzir usando a regra 74 (constant)
+    FILTER  reduzir usando a regra 74 (constant)
+    ')'     reduzir usando a regra 74 (constant)
+
+
+Estado 166
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ':'     reduzir usando a regra 72 (constant)
+    MAP     reduzir usando a regra 72 (constant)
+    FILTER  reduzir usando a regra 72 (constant)
+    ')'     reduzir usando a regra 72 (constant)
+
+
+Estado 167
+
+   62 mul_exp: SUM_OP • factor
+
+    ID      deslocar, e ir ao estado 232
+    INT     deslocar, e ir ao estado 233
+    FLOAT   deslocar, e ir ao estado 234
+    NIL     deslocar, e ir ao estado 235
+    STRING  deslocar, e ir ao estado 236
+    '('     deslocar, e ir ao estado 237
+
+    factor     ir ao estado 238
+    immutable  ir ao estado 239
+    call       ir ao estado 240
+    constant   ir ao estado 241
+
+
+Estado 168
+
+   54 unary_log_exp: EXCLAMATION • unary_log_exp
+
+    ID           deslocar, e ir ao estado 232
+    INT          deslocar, e ir ao estado 233
+    FLOAT        deslocar, e ir ao estado 234
+    NIL          deslocar, e ir ao estado 235
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    STRING       deslocar, e ir ao estado 236
+    '('          deslocar, e ir ao estado 237
+
+    unary_log_exp  ir ao estado 242
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 243
+    immutable      ir ao estado 239
+    call           ir ao estado 240
+    constant       ir ao estado 241
+
+
+Estado 169
+
+   48 list_exp: '?' • factor
+
+    ID      deslocar, e ir ao estado 244
+    INT     deslocar, e ir ao estado 245
+    FLOAT   deslocar, e ir ao estado 246
+    NIL     deslocar, e ir ao estado 247
+    STRING  deslocar, e ir ao estado 248
+    '('     deslocar, e ir ao estado 249
+
+    factor     ir ao estado 250
+    immutable  ir ao estado 251
+    call       ir ao estado 252
+    constant   ir ao estado 253
+
+
+Estado 170
+
+   49 list_exp: '%' • factor
+
+    ID      deslocar, e ir ao estado 244
+    INT     deslocar, e ir ao estado 245
+    FLOAT   deslocar, e ir ao estado 246
+    NIL     deslocar, e ir ao estado 247
+    STRING  deslocar, e ir ao estado 248
+    '('     deslocar, e ir ao estado 249
+
+    factor     ir ao estado 254
+    immutable  ir ao estado 251
+    call       ir ao estado 252
+    constant   ir ao estado 253
+
+
+Estado 171
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ':'     reduzir usando a regra 75 (constant)
+    MAP     reduzir usando a regra 75 (constant)
+    FILTER  reduzir usando a regra 75 (constant)
+    ')'     reduzir usando a regra 75 (constant)
+
+
+Estado 172
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 255
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 173
+
+   46 simple_exp: list_exp •
+
+    ')'  reduzir usando a regra 46 (simple_exp)
+
+
+Estado 174
+
+   45 simple_exp: bin_exp •
+   52 bin_exp: bin_exp • LOG_OP unary_log_exp
+
+    LOG_OP  deslocar, e ir ao estado 256
+
+    ')'  reduzir usando a regra 45 (simple_exp)
+
+
+Estado 175
+
+   53 bin_exp: unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 53 (bin_exp)
+    ')'     reduzir usando a regra 53 (bin_exp)
+
+
+Estado 176
+
+   55 unary_log_exp: rel_exp •
+   56 rel_exp: rel_exp • REL_OP sum_exp
+
+    REL_OP  deslocar, e ir ao estado 257
+
+    LOG_OP  reduzir usando a regra 55 (unary_log_exp)
+    ')'     reduzir usando a regra 55 (unary_log_exp)
+
+
+Estado 177
+
+   57 rel_exp: sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 258
+
+    REL_OP  reduzir usando a regra 57 (rel_exp)
+    LOG_OP  reduzir usando a regra 57 (rel_exp)
+    ')'     reduzir usando a regra 57 (rel_exp)
+
+
+Estado 178
+
+   59 sum_exp: mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 259
+
+    SUM_OP  reduzir usando a regra 59 (sum_exp)
+    REL_OP  reduzir usando a regra 59 (sum_exp)
+    LOG_OP  reduzir usando a regra 59 (sum_exp)
+    ')'     reduzir usando a regra 59 (sum_exp)
+
+
+Estado 179
+
+   47 list_exp: factor • ':' factor
+   50         | factor • MAP factor
+   51         | factor • FILTER factor
+   61 mul_exp: factor •
+
+    ':'     deslocar, e ir ao estado 260
+    MAP     deslocar, e ir ao estado 261
+    FILTER  deslocar, e ir ao estado 262
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ')'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 180
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ':'     reduzir usando a regra 63 (factor)
+    MAP     reduzir usando a regra 63 (factor)
+    FILTER  reduzir usando a regra 63 (factor)
+    ')'     reduzir usando a regra 63 (factor)
+
+
+Estado 181
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ':'     reduzir usando a regra 66 (immutable)
+    MAP     reduzir usando a regra 66 (immutable)
+    FILTER  reduzir usando a regra 66 (immutable)
+    ')'     reduzir usando a regra 66 (immutable)
+
+
+Estado 182
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ':'     reduzir usando a regra 67 (immutable)
+    MAP     reduzir usando a regra 67 (immutable)
+    FILTER  reduzir usando a regra 67 (immutable)
+    ')'     reduzir usando a regra 67 (immutable)
+
+
+Estado 183
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 263
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ':'     reduzir usando a regra 64 (factor)
+    MAP     reduzir usando a regra 64 (factor)
+    FILTER  reduzir usando a regra 64 (factor)
+    ','     reduzir usando a regra 64 (factor)
+    ')'     reduzir usando a regra 64 (factor)
+
+
+Estado 184
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ':'     reduzir usando a regra 73 (constant)
+    MAP     reduzir usando a regra 73 (constant)
+    FILTER  reduzir usando a regra 73 (constant)
+    ','     reduzir usando a regra 73 (constant)
+    ')'     reduzir usando a regra 73 (constant)
+
+
+Estado 185
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ':'     reduzir usando a regra 74 (constant)
+    MAP     reduzir usando a regra 74 (constant)
+    FILTER  reduzir usando a regra 74 (constant)
+    ','     reduzir usando a regra 74 (constant)
+    ')'     reduzir usando a regra 74 (constant)
+
+
+Estado 186
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ':'     reduzir usando a regra 72 (constant)
+    MAP     reduzir usando a regra 72 (constant)
+    FILTER  reduzir usando a regra 72 (constant)
+    ','     reduzir usando a regra 72 (constant)
+    ')'     reduzir usando a regra 72 (constant)
+
+
+Estado 187
+
+   62 mul_exp: SUM_OP • factor
+
+    ID      deslocar, e ir ao estado 264
+    INT     deslocar, e ir ao estado 265
+    FLOAT   deslocar, e ir ao estado 266
+    NIL     deslocar, e ir ao estado 267
+    STRING  deslocar, e ir ao estado 268
+    '('     deslocar, e ir ao estado 269
+
+    factor     ir ao estado 270
+    immutable  ir ao estado 271
+    call       ir ao estado 272
+    constant   ir ao estado 273
+
+
+Estado 188
+
+   54 unary_log_exp: EXCLAMATION • unary_log_exp
+
+    ID           deslocar, e ir ao estado 264
+    INT          deslocar, e ir ao estado 265
+    FLOAT        deslocar, e ir ao estado 266
+    NIL          deslocar, e ir ao estado 267
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    STRING       deslocar, e ir ao estado 268
+    '('          deslocar, e ir ao estado 269
+
+    unary_log_exp  ir ao estado 274
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 275
+    immutable      ir ao estado 271
+    call           ir ao estado 272
+    constant       ir ao estado 273
+
+
+Estado 189
+
+   48 list_exp: '?' • factor
+
+    ID      deslocar, e ir ao estado 276
+    INT     deslocar, e ir ao estado 277
+    FLOAT   deslocar, e ir ao estado 278
+    NIL     deslocar, e ir ao estado 279
+    STRING  deslocar, e ir ao estado 280
+    '('     deslocar, e ir ao estado 281
+
+    factor     ir ao estado 282
+    immutable  ir ao estado 283
+    call       ir ao estado 284
+    constant   ir ao estado 285
+
+
+Estado 190
+
+   49 list_exp: '%' • factor
+
+    ID      deslocar, e ir ao estado 276
+    INT     deslocar, e ir ao estado 277
+    FLOAT   deslocar, e ir ao estado 278
+    NIL     deslocar, e ir ao estado 279
+    STRING  deslocar, e ir ao estado 280
+    '('     deslocar, e ir ao estado 281
+
+    factor     ir ao estado 286
+    immutable  ir ao estado 283
+    call       ir ao estado 284
+    constant   ir ao estado 285
+
+
+Estado 191
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ':'     reduzir usando a regra 75 (constant)
+    MAP     reduzir usando a regra 75 (constant)
+    FILTER  reduzir usando a regra 75 (constant)
+    ','     reduzir usando a regra 75 (constant)
+    ')'     reduzir usando a regra 75 (constant)
+
+
+Estado 192
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 287
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 193
+
+   46 simple_exp: list_exp •
+
+    ','  reduzir usando a regra 46 (simple_exp)
+    ')'  reduzir usando a regra 46 (simple_exp)
+
+
+Estado 194
+
+   45 simple_exp: bin_exp •
+   52 bin_exp: bin_exp • LOG_OP unary_log_exp
+
+    LOG_OP  deslocar, e ir ao estado 288
+
+    ','  reduzir usando a regra 45 (simple_exp)
+    ')'  reduzir usando a regra 45 (simple_exp)
+
+
+Estado 195
+
+   53 bin_exp: unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 53 (bin_exp)
+    ','     reduzir usando a regra 53 (bin_exp)
+    ')'     reduzir usando a regra 53 (bin_exp)
+
+
+Estado 196
+
+   55 unary_log_exp: rel_exp •
+   56 rel_exp: rel_exp • REL_OP sum_exp
+
+    REL_OP  deslocar, e ir ao estado 289
+
+    LOG_OP  reduzir usando a regra 55 (unary_log_exp)
+    ','     reduzir usando a regra 55 (unary_log_exp)
+    ')'     reduzir usando a regra 55 (unary_log_exp)
+
+
+Estado 197
+
+   57 rel_exp: sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 290
+
+    REL_OP  reduzir usando a regra 57 (rel_exp)
+    LOG_OP  reduzir usando a regra 57 (rel_exp)
+    ','     reduzir usando a regra 57 (rel_exp)
+    ')'     reduzir usando a regra 57 (rel_exp)
+
+
+Estado 198
+
+   59 sum_exp: mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 291
+
+    SUM_OP  reduzir usando a regra 59 (sum_exp)
+    REL_OP  reduzir usando a regra 59 (sum_exp)
+    LOG_OP  reduzir usando a regra 59 (sum_exp)
+    ','     reduzir usando a regra 59 (sum_exp)
+    ')'     reduzir usando a regra 59 (sum_exp)
+
+
+Estado 199
+
+   47 list_exp: factor • ':' factor
+   50         | factor • MAP factor
+   51         | factor • FILTER factor
+   61 mul_exp: factor •
+
+    ':'     deslocar, e ir ao estado 292
+    MAP     deslocar, e ir ao estado 293
+    FILTER  deslocar, e ir ao estado 294
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ','     reduzir usando a regra 61 (mul_exp)
+    ')'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 200
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ':'     reduzir usando a regra 63 (factor)
+    MAP     reduzir usando a regra 63 (factor)
+    FILTER  reduzir usando a regra 63 (factor)
+    ','     reduzir usando a regra 63 (factor)
+    ')'     reduzir usando a regra 63 (factor)
+
+
+Estado 201
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ':'     reduzir usando a regra 66 (immutable)
+    MAP     reduzir usando a regra 66 (immutable)
+    FILTER  reduzir usando a regra 66 (immutable)
+    ','     reduzir usando a regra 66 (immutable)
+    ')'     reduzir usando a regra 66 (immutable)
+
+
+Estado 202
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ':'     reduzir usando a regra 67 (immutable)
+    MAP     reduzir usando a regra 67 (immutable)
+    FILTER  reduzir usando a regra 67 (immutable)
+    ','     reduzir usando a regra 67 (immutable)
+    ')'     reduzir usando a regra 67 (immutable)
+
+
+Estado 203
+
+   34 block_stmt: '{' • stmt_list '}'
+
+    error  deslocar, e ir ao estado 72
+
+    ID           reduzir usando a regra 36 (stmt_list)
+    INT          reduzir usando a regra 36 (stmt_list)
+    FLOAT        reduzir usando a regra 36 (stmt_list)
+    NIL          reduzir usando a regra 36 (stmt_list)
+    IF           reduzir usando a regra 36 (stmt_list)
+    FOR          reduzir usando a regra 36 (stmt_list)
+    RETURN       reduzir usando a regra 36 (stmt_list)
+    TYPE         reduzir usando a regra 36 (stmt_list)
+    WRITE        reduzir usando a regra 36 (stmt_list)
+    WRITELN      reduzir usando a regra 36 (stmt_list)
+    READ         reduzir usando a regra 36 (stmt_list)
+    SUM_OP       reduzir usando a regra 36 (stmt_list)
+    EXCLAMATION  reduzir usando a regra 36 (stmt_list)
+    '?'          reduzir usando a regra 36 (stmt_list)
+    '%'          reduzir usando a regra 36 (stmt_list)
+    STRING       reduzir usando a regra 36 (stmt_list)
+    ';'          reduzir usando a regra 36 (stmt_list)
+    '('          reduzir usando a regra 36 (stmt_list)
+    '{'          reduzir usando a regra 36 (stmt_list)
+    '}'          reduzir usando a regra 36 (stmt_list)
+
+    stmt_list  ir ao estado 295
+
+
+Estado 204
+
+    8 var_decl_with_assing: TYPE ID ASSIGN • simple_exp ';'
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 296
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 205
+
+    7 var_decl: TYPE ID ';' •
+
+    ID           reduzir usando a regra 7 (var_decl)
+    INT          reduzir usando a regra 7 (var_decl)
+    FLOAT        reduzir usando a regra 7 (var_decl)
+    NIL          reduzir usando a regra 7 (var_decl)
+    IF           reduzir usando a regra 7 (var_decl)
+    FOR          reduzir usando a regra 7 (var_decl)
+    RETURN       reduzir usando a regra 7 (var_decl)
+    TYPE         reduzir usando a regra 7 (var_decl)
+    WRITE        reduzir usando a regra 7 (var_decl)
+    WRITELN      reduzir usando a regra 7 (var_decl)
+    READ         reduzir usando a regra 7 (var_decl)
+    SUM_OP       reduzir usando a regra 7 (var_decl)
+    EXCLAMATION  reduzir usando a regra 7 (var_decl)
+    '?'          reduzir usando a regra 7 (var_decl)
+    '%'          reduzir usando a regra 7 (var_decl)
+    STRING       reduzir usando a regra 7 (var_decl)
+    ';'          reduzir usando a regra 7 (var_decl)
+    '('          reduzir usando a regra 7 (var_decl)
+    '{'          reduzir usando a regra 7 (var_decl)
+    '}'          reduzir usando a regra 7 (var_decl)
+
+
+Estado 206
+
+   38 if_stmt: IF • '(' simple_exp ')' statement
+   39        | IF • '(' simple_exp ')' statement ELSE statement
+
+    '('  deslocar, e ir ao estado 297
+
+
+Estado 207
+
+   26 for_stmt: FOR • '(' assing_exp ';' simple_exp ';' assing_exp ')' block_stmt
+   27         | FOR • '(' error ';' simple_exp ';' assing_exp ')' block_stmt
+
+    '('  deslocar, e ir ao estado 298
+
+
+Estado 208
+
+   40 return_stmt: RETURN • ';'
+   41            | RETURN • exp ';'
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 299
+    '('          deslocar, e ir ao estado 24
+
+    exp            ir ao estado 300
+    assing_exp     ir ao estado 94
+    simple_exp     ir ao estado 101
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 209
+
+    7 var_decl: TYPE • ID ';'
+    8 var_decl_with_assing: TYPE • ID ASSIGN simple_exp ';'
+
+    ID  deslocar, e ir ao estado 301
+
+
+Estado 210
+
+   42 write_stmt: WRITE • '(' simple_exp ')' ';'
+
+    '('  deslocar, e ir ao estado 302
+
+
+Estado 211
+
+   43 writeln_stmt: WRITELN • '(' simple_exp ')' ';'
+
+    '('  deslocar, e ir ao estado 303
+
+
+Estado 212
+
+   44 read_stmt: READ • '(' ID ')' ';'
+
+    '('  deslocar, e ir ao estado 304
+
+
+Estado 213
+
+   29 exp_stmt: ';' •
+
+    ID           reduzir usando a regra 29 (exp_stmt)
+    INT          reduzir usando a regra 29 (exp_stmt)
+    FLOAT        reduzir usando a regra 29 (exp_stmt)
+    NIL          reduzir usando a regra 29 (exp_stmt)
+    IF           reduzir usando a regra 29 (exp_stmt)
+    ELSE         reduzir usando a regra 29 (exp_stmt)
+    FOR          reduzir usando a regra 29 (exp_stmt)
+    RETURN       reduzir usando a regra 29 (exp_stmt)
+    TYPE         reduzir usando a regra 29 (exp_stmt)
+    WRITE        reduzir usando a regra 29 (exp_stmt)
+    WRITELN      reduzir usando a regra 29 (exp_stmt)
+    READ         reduzir usando a regra 29 (exp_stmt)
+    SUM_OP       reduzir usando a regra 29 (exp_stmt)
+    EXCLAMATION  reduzir usando a regra 29 (exp_stmt)
+    '?'          reduzir usando a regra 29 (exp_stmt)
+    '%'          reduzir usando a regra 29 (exp_stmt)
+    STRING       reduzir usando a regra 29 (exp_stmt)
+    ';'          reduzir usando a regra 29 (exp_stmt)
+    '('          reduzir usando a regra 29 (exp_stmt)
+    '{'          reduzir usando a regra 29 (exp_stmt)
+    '}'          reduzir usando a regra 29 (exp_stmt)
+
+
+Estado 214
+
+   34 block_stmt: '{' • stmt_list '}'
+
+    error  deslocar, e ir ao estado 72
+
+    ID           reduzir usando a regra 36 (stmt_list)
+    INT          reduzir usando a regra 36 (stmt_list)
+    FLOAT        reduzir usando a regra 36 (stmt_list)
+    NIL          reduzir usando a regra 36 (stmt_list)
+    IF           reduzir usando a regra 36 (stmt_list)
+    FOR          reduzir usando a regra 36 (stmt_list)
+    RETURN       reduzir usando a regra 36 (stmt_list)
+    TYPE         reduzir usando a regra 36 (stmt_list)
+    WRITE        reduzir usando a regra 36 (stmt_list)
+    WRITELN      reduzir usando a regra 36 (stmt_list)
+    READ         reduzir usando a regra 36 (stmt_list)
+    SUM_OP       reduzir usando a regra 36 (stmt_list)
+    EXCLAMATION  reduzir usando a regra 36 (stmt_list)
+    '?'          reduzir usando a regra 36 (stmt_list)
+    '%'          reduzir usando a regra 36 (stmt_list)
+    STRING       reduzir usando a regra 36 (stmt_list)
+    ';'          reduzir usando a regra 36 (stmt_list)
+    '('          reduzir usando a regra 36 (stmt_list)
+    '{'          reduzir usando a regra 36 (stmt_list)
+    '}'          reduzir usando a regra 36 (stmt_list)
+
+    stmt_list  ir ao estado 305
+
+
+Estado 215
+
+   23 statement: var_decl •
+
+    ID           reduzir usando a regra 23 (statement)
+    INT          reduzir usando a regra 23 (statement)
+    FLOAT        reduzir usando a regra 23 (statement)
+    NIL          reduzir usando a regra 23 (statement)
+    IF           reduzir usando a regra 23 (statement)
+    ELSE         reduzir usando a regra 23 (statement)
+    FOR          reduzir usando a regra 23 (statement)
+    RETURN       reduzir usando a regra 23 (statement)
+    TYPE         reduzir usando a regra 23 (statement)
+    WRITE        reduzir usando a regra 23 (statement)
+    WRITELN      reduzir usando a regra 23 (statement)
+    READ         reduzir usando a regra 23 (statement)
+    SUM_OP       reduzir usando a regra 23 (statement)
+    EXCLAMATION  reduzir usando a regra 23 (statement)
+    '?'          reduzir usando a regra 23 (statement)
+    '%'          reduzir usando a regra 23 (statement)
+    STRING       reduzir usando a regra 23 (statement)
+    ';'          reduzir usando a regra 23 (statement)
+    '('          reduzir usando a regra 23 (statement)
+    '{'          reduzir usando a regra 23 (statement)
+    '}'          reduzir usando a regra 23 (statement)
+
+
+Estado 216
+
+   24 statement: var_decl_with_assing •
+
+    ID           reduzir usando a regra 24 (statement)
+    INT          reduzir usando a regra 24 (statement)
+    FLOAT        reduzir usando a regra 24 (statement)
+    NIL          reduzir usando a regra 24 (statement)
+    IF           reduzir usando a regra 24 (statement)
+    ELSE         reduzir usando a regra 24 (statement)
+    FOR          reduzir usando a regra 24 (statement)
+    RETURN       reduzir usando a regra 24 (statement)
+    TYPE         reduzir usando a regra 24 (statement)
+    WRITE        reduzir usando a regra 24 (statement)
+    WRITELN      reduzir usando a regra 24 (statement)
+    READ         reduzir usando a regra 24 (statement)
+    SUM_OP       reduzir usando a regra 24 (statement)
+    EXCLAMATION  reduzir usando a regra 24 (statement)
+    '?'          reduzir usando a regra 24 (statement)
+    '%'          reduzir usando a regra 24 (statement)
+    STRING       reduzir usando a regra 24 (statement)
+    ';'          reduzir usando a regra 24 (statement)
+    '('          reduzir usando a regra 24 (statement)
+    '{'          reduzir usando a regra 24 (statement)
+    '}'          reduzir usando a regra 24 (statement)
+
+
+Estado 217
+
+   25 statement: for_stmt •
+
+    ID           reduzir usando a regra 25 (statement)
+    INT          reduzir usando a regra 25 (statement)
+    FLOAT        reduzir usando a regra 25 (statement)
+    NIL          reduzir usando a regra 25 (statement)
+    IF           reduzir usando a regra 25 (statement)
+    ELSE         reduzir usando a regra 25 (statement)
+    FOR          reduzir usando a regra 25 (statement)
+    RETURN       reduzir usando a regra 25 (statement)
+    TYPE         reduzir usando a regra 25 (statement)
+    WRITE        reduzir usando a regra 25 (statement)
+    WRITELN      reduzir usando a regra 25 (statement)
+    READ         reduzir usando a regra 25 (statement)
+    SUM_OP       reduzir usando a regra 25 (statement)
+    EXCLAMATION  reduzir usando a regra 25 (statement)
+    '?'          reduzir usando a regra 25 (statement)
+    '%'          reduzir usando a regra 25 (statement)
+    STRING       reduzir usando a regra 25 (statement)
+    ';'          reduzir usando a regra 25 (statement)
+    '('          reduzir usando a regra 25 (statement)
+    '{'          reduzir usando a regra 25 (statement)
+    '}'          reduzir usando a regra 25 (statement)
+
+
+Estado 218
+
+   16 statement: exp_stmt •
+
+    ID           reduzir usando a regra 16 (statement)
+    INT          reduzir usando a regra 16 (statement)
+    FLOAT        reduzir usando a regra 16 (statement)
+    NIL          reduzir usando a regra 16 (statement)
+    IF           reduzir usando a regra 16 (statement)
+    ELSE         reduzir usando a regra 16 (statement)
+    FOR          reduzir usando a regra 16 (statement)
+    RETURN       reduzir usando a regra 16 (statement)
+    TYPE         reduzir usando a regra 16 (statement)
+    WRITE        reduzir usando a regra 16 (statement)
+    WRITELN      reduzir usando a regra 16 (statement)
+    READ         reduzir usando a regra 16 (statement)
+    SUM_OP       reduzir usando a regra 16 (statement)
+    EXCLAMATION  reduzir usando a regra 16 (statement)
+    '?'          reduzir usando a regra 16 (statement)
+    '%'          reduzir usando a regra 16 (statement)
+    STRING       reduzir usando a regra 16 (statement)
+    ';'          reduzir usando a regra 16 (statement)
+    '('          reduzir usando a regra 16 (statement)
+    '{'          reduzir usando a regra 16 (statement)
+    '}'          reduzir usando a regra 16 (statement)
+
+
+Estado 219
+
+   28 exp_stmt: exp • ';'
+
+    ';'  deslocar, e ir ao estado 306
+
+
+Estado 220
+
+   17 statement: block_stmt •
+
+    ID           reduzir usando a regra 17 (statement)
+    INT          reduzir usando a regra 17 (statement)
+    FLOAT        reduzir usando a regra 17 (statement)
+    NIL          reduzir usando a regra 17 (statement)
+    IF           reduzir usando a regra 17 (statement)
+    ELSE         reduzir usando a regra 17 (statement)
+    FOR          reduzir usando a regra 17 (statement)
+    RETURN       reduzir usando a regra 17 (statement)
+    TYPE         reduzir usando a regra 17 (statement)
+    WRITE        reduzir usando a regra 17 (statement)
+    WRITELN      reduzir usando a regra 17 (statement)
+    READ         reduzir usando a regra 17 (statement)
+    SUM_OP       reduzir usando a regra 17 (statement)
+    EXCLAMATION  reduzir usando a regra 17 (statement)
+    '?'          reduzir usando a regra 17 (statement)
+    '%'          reduzir usando a regra 17 (statement)
+    STRING       reduzir usando a regra 17 (statement)
+    ';'          reduzir usando a regra 17 (statement)
+    '('          reduzir usando a regra 17 (statement)
+    '{'          reduzir usando a regra 17 (statement)
+    '}'          reduzir usando a regra 17 (statement)
+
+
+Estado 221
+
+   18 statement: if_stmt •
+
+    ID           reduzir usando a regra 18 (statement)
+    INT          reduzir usando a regra 18 (statement)
+    FLOAT        reduzir usando a regra 18 (statement)
+    NIL          reduzir usando a regra 18 (statement)
+    IF           reduzir usando a regra 18 (statement)
+    ELSE         reduzir usando a regra 18 (statement)
+    FOR          reduzir usando a regra 18 (statement)
+    RETURN       reduzir usando a regra 18 (statement)
+    TYPE         reduzir usando a regra 18 (statement)
+    WRITE        reduzir usando a regra 18 (statement)
+    WRITELN      reduzir usando a regra 18 (statement)
+    READ         reduzir usando a regra 18 (statement)
+    SUM_OP       reduzir usando a regra 18 (statement)
+    EXCLAMATION  reduzir usando a regra 18 (statement)
+    '?'          reduzir usando a regra 18 (statement)
+    '%'          reduzir usando a regra 18 (statement)
+    STRING       reduzir usando a regra 18 (statement)
+    ';'          reduzir usando a regra 18 (statement)
+    '('          reduzir usando a regra 18 (statement)
+    '{'          reduzir usando a regra 18 (statement)
+    '}'          reduzir usando a regra 18 (statement)
+
+
+Estado 222
+
+   19 statement: return_stmt •
+
+    ID           reduzir usando a regra 19 (statement)
+    INT          reduzir usando a regra 19 (statement)
+    FLOAT        reduzir usando a regra 19 (statement)
+    NIL          reduzir usando a regra 19 (statement)
+    IF           reduzir usando a regra 19 (statement)
+    ELSE         reduzir usando a regra 19 (statement)
+    FOR          reduzir usando a regra 19 (statement)
+    RETURN       reduzir usando a regra 19 (statement)
+    TYPE         reduzir usando a regra 19 (statement)
+    WRITE        reduzir usando a regra 19 (statement)
+    WRITELN      reduzir usando a regra 19 (statement)
+    READ         reduzir usando a regra 19 (statement)
+    SUM_OP       reduzir usando a regra 19 (statement)
+    EXCLAMATION  reduzir usando a regra 19 (statement)
+    '?'          reduzir usando a regra 19 (statement)
+    '%'          reduzir usando a regra 19 (statement)
+    STRING       reduzir usando a regra 19 (statement)
+    ';'          reduzir usando a regra 19 (statement)
+    '('          reduzir usando a regra 19 (statement)
+    '{'          reduzir usando a regra 19 (statement)
+    '}'          reduzir usando a regra 19 (statement)
+
+
+Estado 223
+
+   20 statement: write_stmt •
+
+    ID           reduzir usando a regra 20 (statement)
+    INT          reduzir usando a regra 20 (statement)
+    FLOAT        reduzir usando a regra 20 (statement)
+    NIL          reduzir usando a regra 20 (statement)
+    IF           reduzir usando a regra 20 (statement)
+    ELSE         reduzir usando a regra 20 (statement)
+    FOR          reduzir usando a regra 20 (statement)
+    RETURN       reduzir usando a regra 20 (statement)
+    TYPE         reduzir usando a regra 20 (statement)
+    WRITE        reduzir usando a regra 20 (statement)
+    WRITELN      reduzir usando a regra 20 (statement)
+    READ         reduzir usando a regra 20 (statement)
+    SUM_OP       reduzir usando a regra 20 (statement)
+    EXCLAMATION  reduzir usando a regra 20 (statement)
+    '?'          reduzir usando a regra 20 (statement)
+    '%'          reduzir usando a regra 20 (statement)
+    STRING       reduzir usando a regra 20 (statement)
+    ';'          reduzir usando a regra 20 (statement)
+    '('          reduzir usando a regra 20 (statement)
+    '{'          reduzir usando a regra 20 (statement)
+    '}'          reduzir usando a regra 20 (statement)
+
+
+Estado 224
+
+   21 statement: writeln_stmt •
+
+    ID           reduzir usando a regra 21 (statement)
+    INT          reduzir usando a regra 21 (statement)
+    FLOAT        reduzir usando a regra 21 (statement)
+    NIL          reduzir usando a regra 21 (statement)
+    IF           reduzir usando a regra 21 (statement)
+    ELSE         reduzir usando a regra 21 (statement)
+    FOR          reduzir usando a regra 21 (statement)
+    RETURN       reduzir usando a regra 21 (statement)
+    TYPE         reduzir usando a regra 21 (statement)
+    WRITE        reduzir usando a regra 21 (statement)
+    WRITELN      reduzir usando a regra 21 (statement)
+    READ         reduzir usando a regra 21 (statement)
+    SUM_OP       reduzir usando a regra 21 (statement)
+    EXCLAMATION  reduzir usando a regra 21 (statement)
+    '?'          reduzir usando a regra 21 (statement)
+    '%'          reduzir usando a regra 21 (statement)
+    STRING       reduzir usando a regra 21 (statement)
+    ';'          reduzir usando a regra 21 (statement)
+    '('          reduzir usando a regra 21 (statement)
+    '{'          reduzir usando a regra 21 (statement)
+    '}'          reduzir usando a regra 21 (statement)
+
+
+Estado 225
+
+   22 statement: read_stmt •
+
+    ID           reduzir usando a regra 22 (statement)
+    INT          reduzir usando a regra 22 (statement)
+    FLOAT        reduzir usando a regra 22 (statement)
+    NIL          reduzir usando a regra 22 (statement)
+    IF           reduzir usando a regra 22 (statement)
+    ELSE         reduzir usando a regra 22 (statement)
+    FOR          reduzir usando a regra 22 (statement)
+    RETURN       reduzir usando a regra 22 (statement)
+    TYPE         reduzir usando a regra 22 (statement)
+    WRITE        reduzir usando a regra 22 (statement)
+    WRITELN      reduzir usando a regra 22 (statement)
+    READ         reduzir usando a regra 22 (statement)
+    SUM_OP       reduzir usando a regra 22 (statement)
+    EXCLAMATION  reduzir usando a regra 22 (statement)
+    '?'          reduzir usando a regra 22 (statement)
+    '%'          reduzir usando a regra 22 (statement)
+    STRING       reduzir usando a regra 22 (statement)
+    ';'          reduzir usando a regra 22 (statement)
+    '('          reduzir usando a regra 22 (statement)
+    '{'          reduzir usando a regra 22 (statement)
+    '}'          reduzir usando a regra 22 (statement)
+
+
+Estado 226
+
+   32 assing_exp: ID • ASSIGN simple_exp
+   33           | ID • error
+
+    error   deslocar, e ir ao estado 307
+    ASSIGN  deslocar, e ir ao estado 308
+
+
+Estado 227
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 309
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 310
+    constant       ir ao estado 202
+
+
+Estado 228
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 311
+
+
+Estado 229
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 312
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 313
+    constant       ir ao estado 202
+
+
+Estado 230
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 314
+
+
+Estado 231
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 315
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 316
+    constant       ir ao estado 202
+
+
+Estado 232
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 317
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ')'     reduzir usando a regra 64 (factor)
+
+
+Estado 233
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ')'     reduzir usando a regra 73 (constant)
+
+
+Estado 234
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ')'     reduzir usando a regra 74 (constant)
+
+
+Estado 235
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ')'     reduzir usando a regra 72 (constant)
+
+
+Estado 236
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ')'     reduzir usando a regra 75 (constant)
+
+
+Estado 237
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 318
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 238
+
+   62 mul_exp: SUM_OP factor •
+
+    MUL_OP  reduzir usando a regra 62 (mul_exp)
+    SUM_OP  reduzir usando a regra 62 (mul_exp)
+    REL_OP  reduzir usando a regra 62 (mul_exp)
+    LOG_OP  reduzir usando a regra 62 (mul_exp)
+    ')'     reduzir usando a regra 62 (mul_exp)
+
+
+Estado 239
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ')'     reduzir usando a regra 63 (factor)
+
+
+Estado 240
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ')'     reduzir usando a regra 66 (immutable)
+
+
+Estado 241
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ')'     reduzir usando a regra 67 (immutable)
+
+
+Estado 242
+
+   54 unary_log_exp: EXCLAMATION unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 54 (unary_log_exp)
+    ')'     reduzir usando a regra 54 (unary_log_exp)
+
+
+Estado 243
+
+   61 mul_exp: factor •
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ')'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 244
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 319
+
+    ')'  reduzir usando a regra 64 (factor)
+
+
+Estado 245
+
+   73 constant: INT •
+
+    ')'  reduzir usando a regra 73 (constant)
+
+
+Estado 246
+
+   74 constant: FLOAT •
+
+    ')'  reduzir usando a regra 74 (constant)
+
+
+Estado 247
+
+   72 constant: NIL •
+
+    ')'  reduzir usando a regra 72 (constant)
+
+
+Estado 248
+
+   75 constant: STRING •
+
+    ')'  reduzir usando a regra 75 (constant)
+
+
+Estado 249
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 320
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 250
+
+   48 list_exp: '?' factor •
+
+    ')'  reduzir usando a regra 48 (list_exp)
+
+
+Estado 251
+
+   63 factor: immutable •
+
+    ')'  reduzir usando a regra 63 (factor)
+
+
+Estado 252
+
+   66 immutable: call •
+
+    ')'  reduzir usando a regra 66 (immutable)
+
+
+Estado 253
+
+   67 immutable: constant •
+
+    ')'  reduzir usando a regra 67 (immutable)
+
+
+Estado 254
+
+   49 list_exp: '%' factor •
+
+    ')'  reduzir usando a regra 49 (list_exp)
+
+
+Estado 255
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 321
+
+
+Estado 256
+
+   52 bin_exp: bin_exp LOG_OP • unary_log_exp
+
+    ID           deslocar, e ir ao estado 232
+    INT          deslocar, e ir ao estado 233
+    FLOAT        deslocar, e ir ao estado 234
+    NIL          deslocar, e ir ao estado 235
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    STRING       deslocar, e ir ao estado 236
+    '('          deslocar, e ir ao estado 237
+
+    unary_log_exp  ir ao estado 322
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 243
+    immutable      ir ao estado 239
+    call           ir ao estado 240
+    constant       ir ao estado 241
+
+
+Estado 257
+
+   56 rel_exp: rel_exp REL_OP • sum_exp
+
+    ID      deslocar, e ir ao estado 232
+    INT     deslocar, e ir ao estado 233
+    FLOAT   deslocar, e ir ao estado 234
+    NIL     deslocar, e ir ao estado 235
+    SUM_OP  deslocar, e ir ao estado 167
+    STRING  deslocar, e ir ao estado 236
+    '('     deslocar, e ir ao estado 237
+
+    sum_exp    ir ao estado 323
+    mul_exp    ir ao estado 178
+    factor     ir ao estado 243
+    immutable  ir ao estado 239
+    call       ir ao estado 240
+    constant   ir ao estado 241
+
+
+Estado 258
+
+   58 sum_exp: sum_exp SUM_OP • mul_exp
+
+    ID      deslocar, e ir ao estado 232
+    INT     deslocar, e ir ao estado 233
+    FLOAT   deslocar, e ir ao estado 234
+    NIL     deslocar, e ir ao estado 235
+    SUM_OP  deslocar, e ir ao estado 167
+    STRING  deslocar, e ir ao estado 236
+    '('     deslocar, e ir ao estado 237
+
+    mul_exp    ir ao estado 324
+    factor     ir ao estado 243
+    immutable  ir ao estado 239
+    call       ir ao estado 240
+    constant   ir ao estado 241
+
+
+Estado 259
+
+   60 mul_exp: mul_exp MUL_OP • factor
+
+    ID      deslocar, e ir ao estado 232
+    INT     deslocar, e ir ao estado 233
+    FLOAT   deslocar, e ir ao estado 234
+    NIL     deslocar, e ir ao estado 235
+    STRING  deslocar, e ir ao estado 236
+    '('     deslocar, e ir ao estado 237
+
+    factor     ir ao estado 325
+    immutable  ir ao estado 239
+    call       ir ao estado 240
+    constant   ir ao estado 241
+
+
+Estado 260
+
+   47 list_exp: factor ':' • factor
+
+    ID      deslocar, e ir ao estado 244
+    INT     deslocar, e ir ao estado 245
+    FLOAT   deslocar, e ir ao estado 246
+    NIL     deslocar, e ir ao estado 247
+    STRING  deslocar, e ir ao estado 248
+    '('     deslocar, e ir ao estado 249
+
+    factor     ir ao estado 326
+    immutable  ir ao estado 251
+    call       ir ao estado 252
+    constant   ir ao estado 253
+
+
+Estado 261
+
+   50 list_exp: factor MAP • factor
+
+    ID      deslocar, e ir ao estado 244
+    INT     deslocar, e ir ao estado 245
+    FLOAT   deslocar, e ir ao estado 246
+    NIL     deslocar, e ir ao estado 247
+    STRING  deslocar, e ir ao estado 248
+    '('     deslocar, e ir ao estado 249
+
+    factor     ir ao estado 327
+    immutable  ir ao estado 251
+    call       ir ao estado 252
+    constant   ir ao estado 253
+
+
+Estado 262
+
+   51 list_exp: factor FILTER • factor
+
+    ID      deslocar, e ir ao estado 244
+    INT     deslocar, e ir ao estado 245
+    FLOAT   deslocar, e ir ao estado 246
+    NIL     deslocar, e ir ao estado 247
+    STRING  deslocar, e ir ao estado 248
+    '('     deslocar, e ir ao estado 249
+
+    factor     ir ao estado 328
+    immutable  ir ao estado 251
+    call       ir ao estado 252
+    constant   ir ao estado 253
+
+
+Estado 263
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 329
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 330
+    constant       ir ao estado 202
+
+
+Estado 264
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 331
+
+    MUL_OP  reduzir usando a regra 64 (factor)
+    SUM_OP  reduzir usando a regra 64 (factor)
+    REL_OP  reduzir usando a regra 64 (factor)
+    LOG_OP  reduzir usando a regra 64 (factor)
+    ','     reduzir usando a regra 64 (factor)
+    ')'     reduzir usando a regra 64 (factor)
+
+
+Estado 265
+
+   73 constant: INT •
+
+    MUL_OP  reduzir usando a regra 73 (constant)
+    SUM_OP  reduzir usando a regra 73 (constant)
+    REL_OP  reduzir usando a regra 73 (constant)
+    LOG_OP  reduzir usando a regra 73 (constant)
+    ','     reduzir usando a regra 73 (constant)
+    ')'     reduzir usando a regra 73 (constant)
+
+
+Estado 266
+
+   74 constant: FLOAT •
+
+    MUL_OP  reduzir usando a regra 74 (constant)
+    SUM_OP  reduzir usando a regra 74 (constant)
+    REL_OP  reduzir usando a regra 74 (constant)
+    LOG_OP  reduzir usando a regra 74 (constant)
+    ','     reduzir usando a regra 74 (constant)
+    ')'     reduzir usando a regra 74 (constant)
+
+
+Estado 267
+
+   72 constant: NIL •
+
+    MUL_OP  reduzir usando a regra 72 (constant)
+    SUM_OP  reduzir usando a regra 72 (constant)
+    REL_OP  reduzir usando a regra 72 (constant)
+    LOG_OP  reduzir usando a regra 72 (constant)
+    ','     reduzir usando a regra 72 (constant)
+    ')'     reduzir usando a regra 72 (constant)
+
+
+Estado 268
+
+   75 constant: STRING •
+
+    MUL_OP  reduzir usando a regra 75 (constant)
+    SUM_OP  reduzir usando a regra 75 (constant)
+    REL_OP  reduzir usando a regra 75 (constant)
+    LOG_OP  reduzir usando a regra 75 (constant)
+    ','     reduzir usando a regra 75 (constant)
+    ')'     reduzir usando a regra 75 (constant)
+
+
+Estado 269
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 332
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 270
+
+   62 mul_exp: SUM_OP factor •
+
+    MUL_OP  reduzir usando a regra 62 (mul_exp)
+    SUM_OP  reduzir usando a regra 62 (mul_exp)
+    REL_OP  reduzir usando a regra 62 (mul_exp)
+    LOG_OP  reduzir usando a regra 62 (mul_exp)
+    ','     reduzir usando a regra 62 (mul_exp)
+    ')'     reduzir usando a regra 62 (mul_exp)
+
+
+Estado 271
+
+   63 factor: immutable •
+
+    MUL_OP  reduzir usando a regra 63 (factor)
+    SUM_OP  reduzir usando a regra 63 (factor)
+    REL_OP  reduzir usando a regra 63 (factor)
+    LOG_OP  reduzir usando a regra 63 (factor)
+    ','     reduzir usando a regra 63 (factor)
+    ')'     reduzir usando a regra 63 (factor)
+
+
+Estado 272
+
+   66 immutable: call •
+
+    MUL_OP  reduzir usando a regra 66 (immutable)
+    SUM_OP  reduzir usando a regra 66 (immutable)
+    REL_OP  reduzir usando a regra 66 (immutable)
+    LOG_OP  reduzir usando a regra 66 (immutable)
+    ','     reduzir usando a regra 66 (immutable)
+    ')'     reduzir usando a regra 66 (immutable)
+
+
+Estado 273
+
+   67 immutable: constant •
+
+    MUL_OP  reduzir usando a regra 67 (immutable)
+    SUM_OP  reduzir usando a regra 67 (immutable)
+    REL_OP  reduzir usando a regra 67 (immutable)
+    LOG_OP  reduzir usando a regra 67 (immutable)
+    ','     reduzir usando a regra 67 (immutable)
+    ')'     reduzir usando a regra 67 (immutable)
+
+
+Estado 274
+
+   54 unary_log_exp: EXCLAMATION unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 54 (unary_log_exp)
+    ','     reduzir usando a regra 54 (unary_log_exp)
+    ')'     reduzir usando a regra 54 (unary_log_exp)
+
+
+Estado 275
+
+   61 mul_exp: factor •
+
+    MUL_OP  reduzir usando a regra 61 (mul_exp)
+    SUM_OP  reduzir usando a regra 61 (mul_exp)
+    REL_OP  reduzir usando a regra 61 (mul_exp)
+    LOG_OP  reduzir usando a regra 61 (mul_exp)
+    ','     reduzir usando a regra 61 (mul_exp)
+    ')'     reduzir usando a regra 61 (mul_exp)
+
+
+Estado 276
+
+   64 factor: ID •
+   68 call: ID • '(' args ')'
+   69     | ID • '(' ')'
+
+    '('  deslocar, e ir ao estado 333
+
+    ','  reduzir usando a regra 64 (factor)
+    ')'  reduzir usando a regra 64 (factor)
+
+
+Estado 277
+
+   73 constant: INT •
+
+    ','  reduzir usando a regra 73 (constant)
+    ')'  reduzir usando a regra 73 (constant)
+
+
+Estado 278
+
+   74 constant: FLOAT •
+
+    ','  reduzir usando a regra 74 (constant)
+    ')'  reduzir usando a regra 74 (constant)
+
+
+Estado 279
+
+   72 constant: NIL •
+
+    ','  reduzir usando a regra 72 (constant)
+    ')'  reduzir usando a regra 72 (constant)
+
+
+Estado 280
+
+   75 constant: STRING •
+
+    ','  reduzir usando a regra 75 (constant)
+    ')'  reduzir usando a regra 75 (constant)
+
+
+Estado 281
+
+   65 immutable: '(' • simple_exp ')'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 334
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 282
+
+   48 list_exp: '?' factor •
+
+    ','  reduzir usando a regra 48 (list_exp)
+    ')'  reduzir usando a regra 48 (list_exp)
+
+
+Estado 283
+
+   63 factor: immutable •
+
+    ','  reduzir usando a regra 63 (factor)
+    ')'  reduzir usando a regra 63 (factor)
+
+
+Estado 284
+
+   66 immutable: call •
+
+    ','  reduzir usando a regra 66 (immutable)
+    ')'  reduzir usando a regra 66 (immutable)
+
+
+Estado 285
+
+   67 immutable: constant •
+
+    ','  reduzir usando a regra 67 (immutable)
+    ')'  reduzir usando a regra 67 (immutable)
+
+
+Estado 286
+
+   49 list_exp: '%' factor •
+
+    ','  reduzir usando a regra 49 (list_exp)
+    ')'  reduzir usando a regra 49 (list_exp)
+
+
+Estado 287
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 335
+
+
+Estado 288
+
+   52 bin_exp: bin_exp LOG_OP • unary_log_exp
+
+    ID           deslocar, e ir ao estado 264
+    INT          deslocar, e ir ao estado 265
+    FLOAT        deslocar, e ir ao estado 266
+    NIL          deslocar, e ir ao estado 267
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    STRING       deslocar, e ir ao estado 268
+    '('          deslocar, e ir ao estado 269
+
+    unary_log_exp  ir ao estado 336
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 275
+    immutable      ir ao estado 271
+    call           ir ao estado 272
+    constant       ir ao estado 273
+
+
+Estado 289
+
+   56 rel_exp: rel_exp REL_OP • sum_exp
+
+    ID      deslocar, e ir ao estado 264
+    INT     deslocar, e ir ao estado 265
+    FLOAT   deslocar, e ir ao estado 266
+    NIL     deslocar, e ir ao estado 267
+    SUM_OP  deslocar, e ir ao estado 187
+    STRING  deslocar, e ir ao estado 268
+    '('     deslocar, e ir ao estado 269
+
+    sum_exp    ir ao estado 337
+    mul_exp    ir ao estado 198
+    factor     ir ao estado 275
+    immutable  ir ao estado 271
+    call       ir ao estado 272
+    constant   ir ao estado 273
+
+
+Estado 290
+
+   58 sum_exp: sum_exp SUM_OP • mul_exp
+
+    ID      deslocar, e ir ao estado 264
+    INT     deslocar, e ir ao estado 265
+    FLOAT   deslocar, e ir ao estado 266
+    NIL     deslocar, e ir ao estado 267
+    SUM_OP  deslocar, e ir ao estado 187
+    STRING  deslocar, e ir ao estado 268
+    '('     deslocar, e ir ao estado 269
+
+    mul_exp    ir ao estado 338
+    factor     ir ao estado 275
+    immutable  ir ao estado 271
+    call       ir ao estado 272
+    constant   ir ao estado 273
+
+
+Estado 291
+
+   60 mul_exp: mul_exp MUL_OP • factor
+
+    ID      deslocar, e ir ao estado 264
+    INT     deslocar, e ir ao estado 265
+    FLOAT   deslocar, e ir ao estado 266
+    NIL     deslocar, e ir ao estado 267
+    STRING  deslocar, e ir ao estado 268
+    '('     deslocar, e ir ao estado 269
+
+    factor     ir ao estado 339
+    immutable  ir ao estado 271
+    call       ir ao estado 272
+    constant   ir ao estado 273
+
+
+Estado 292
+
+   47 list_exp: factor ':' • factor
+
+    ID      deslocar, e ir ao estado 276
+    INT     deslocar, e ir ao estado 277
+    FLOAT   deslocar, e ir ao estado 278
+    NIL     deslocar, e ir ao estado 279
+    STRING  deslocar, e ir ao estado 280
+    '('     deslocar, e ir ao estado 281
+
+    factor     ir ao estado 340
+    immutable  ir ao estado 283
+    call       ir ao estado 284
+    constant   ir ao estado 285
+
+
+Estado 293
+
+   50 list_exp: factor MAP • factor
+
+    ID      deslocar, e ir ao estado 276
+    INT     deslocar, e ir ao estado 277
+    FLOAT   deslocar, e ir ao estado 278
+    NIL     deslocar, e ir ao estado 279
+    STRING  deslocar, e ir ao estado 280
+    '('     deslocar, e ir ao estado 281
+
+    factor     ir ao estado 341
+    immutable  ir ao estado 283
+    call       ir ao estado 284
+    constant   ir ao estado 285
+
+
+Estado 294
+
+   51 list_exp: factor FILTER • factor
+
+    ID      deslocar, e ir ao estado 276
+    INT     deslocar, e ir ao estado 277
+    FLOAT   deslocar, e ir ao estado 278
+    NIL     deslocar, e ir ao estado 279
+    STRING  deslocar, e ir ao estado 280
+    '('     deslocar, e ir ao estado 281
+
+    factor     ir ao estado 342
+    immutable  ir ao estado 283
+    call       ir ao estado 284
+    constant   ir ao estado 285
+
+
+Estado 295
+
+   34 block_stmt: '{' stmt_list • '}'
+   35 stmt_list: stmt_list • statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 79
+    FOR          deslocar, e ir ao estado 80
+    RETURN       deslocar, e ir ao estado 81
+    TYPE         deslocar, e ir ao estado 82
+    WRITE        deslocar, e ir ao estado 83
+    WRITELN      deslocar, e ir ao estado 84
+    READ         deslocar, e ir ao estado 85
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 86
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 203
+    '}'          deslocar, e ir ao estado 343
+
+    var_decl              ir ao estado 88
+    var_decl_with_assing  ir ao estado 89
+    statement             ir ao estado 90
+    for_stmt              ir ao estado 91
+    exp_stmt              ir ao estado 92
+    exp                   ir ao estado 93
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 95
+    if_stmt               ir ao estado 96
+    return_stmt           ir ao estado 97
+    write_stmt            ir ao estado 98
+    writeln_stmt          ir ao estado 99
+    read_stmt             ir ao estado 100
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 296
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp • ';'
+
+    ';'  deslocar, e ir ao estado 344
+
+
+Estado 297
+
+   38 if_stmt: IF '(' • simple_exp ')' statement
+   39        | IF '(' • simple_exp ')' statement ELSE statement
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 345
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 298
+
+   26 for_stmt: FOR '(' • assing_exp ';' simple_exp ';' assing_exp ')' block_stmt
+   27         | FOR '(' • error ';' simple_exp ';' assing_exp ')' block_stmt
+
+    error  deslocar, e ir ao estado 346
+    ID     deslocar, e ir ao estado 117
+
+    assing_exp  ir ao estado 347
+
+
+Estado 299
+
+   40 return_stmt: RETURN ';' •
+
+    ID           reduzir usando a regra 40 (return_stmt)
+    INT          reduzir usando a regra 40 (return_stmt)
+    FLOAT        reduzir usando a regra 40 (return_stmt)
+    NIL          reduzir usando a regra 40 (return_stmt)
+    IF           reduzir usando a regra 40 (return_stmt)
+    ELSE         reduzir usando a regra 40 (return_stmt)
+    FOR          reduzir usando a regra 40 (return_stmt)
+    RETURN       reduzir usando a regra 40 (return_stmt)
+    TYPE         reduzir usando a regra 40 (return_stmt)
+    WRITE        reduzir usando a regra 40 (return_stmt)
+    WRITELN      reduzir usando a regra 40 (return_stmt)
+    READ         reduzir usando a regra 40 (return_stmt)
+    SUM_OP       reduzir usando a regra 40 (return_stmt)
+    EXCLAMATION  reduzir usando a regra 40 (return_stmt)
+    '?'          reduzir usando a regra 40 (return_stmt)
+    '%'          reduzir usando a regra 40 (return_stmt)
+    STRING       reduzir usando a regra 40 (return_stmt)
+    ';'          reduzir usando a regra 40 (return_stmt)
+    '('          reduzir usando a regra 40 (return_stmt)
+    '{'          reduzir usando a regra 40 (return_stmt)
+    '}'          reduzir usando a regra 40 (return_stmt)
+
+
+Estado 300
+
+   41 return_stmt: RETURN exp • ';'
+
+    ';'  deslocar, e ir ao estado 348
+
+
+Estado 301
+
+    7 var_decl: TYPE ID • ';'
+    8 var_decl_with_assing: TYPE ID • ASSIGN simple_exp ';'
+
+    ASSIGN  deslocar, e ir ao estado 349
+    ';'     deslocar, e ir ao estado 350
+
+
+Estado 302
+
+   42 write_stmt: WRITE '(' • simple_exp ')' ';'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 351
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 303
+
+   43 writeln_stmt: WRITELN '(' • simple_exp ')' ';'
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 352
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 304
+
+   44 read_stmt: READ '(' • ID ')' ';'
+
+    ID  deslocar, e ir ao estado 353
+
+
+Estado 305
+
+   34 block_stmt: '{' stmt_list • '}'
+   35 stmt_list: stmt_list • statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 79
+    FOR          deslocar, e ir ao estado 80
+    RETURN       deslocar, e ir ao estado 81
+    TYPE         deslocar, e ir ao estado 82
+    WRITE        deslocar, e ir ao estado 83
+    WRITELN      deslocar, e ir ao estado 84
+    READ         deslocar, e ir ao estado 85
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 86
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 203
+    '}'          deslocar, e ir ao estado 354
+
+    var_decl              ir ao estado 88
+    var_decl_with_assing  ir ao estado 89
+    statement             ir ao estado 90
+    for_stmt              ir ao estado 91
+    exp_stmt              ir ao estado 92
+    exp                   ir ao estado 93
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 95
+    if_stmt               ir ao estado 96
+    return_stmt           ir ao estado 97
+    write_stmt            ir ao estado 98
+    writeln_stmt          ir ao estado 99
+    read_stmt             ir ao estado 100
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 306
+
+   28 exp_stmt: exp ';' •
+
+    ID           reduzir usando a regra 28 (exp_stmt)
+    INT          reduzir usando a regra 28 (exp_stmt)
+    FLOAT        reduzir usando a regra 28 (exp_stmt)
+    NIL          reduzir usando a regra 28 (exp_stmt)
+    IF           reduzir usando a regra 28 (exp_stmt)
+    ELSE         reduzir usando a regra 28 (exp_stmt)
+    FOR          reduzir usando a regra 28 (exp_stmt)
+    RETURN       reduzir usando a regra 28 (exp_stmt)
+    TYPE         reduzir usando a regra 28 (exp_stmt)
+    WRITE        reduzir usando a regra 28 (exp_stmt)
+    WRITELN      reduzir usando a regra 28 (exp_stmt)
+    READ         reduzir usando a regra 28 (exp_stmt)
+    SUM_OP       reduzir usando a regra 28 (exp_stmt)
+    EXCLAMATION  reduzir usando a regra 28 (exp_stmt)
+    '?'          reduzir usando a regra 28 (exp_stmt)
+    '%'          reduzir usando a regra 28 (exp_stmt)
+    STRING       reduzir usando a regra 28 (exp_stmt)
+    ';'          reduzir usando a regra 28 (exp_stmt)
+    '('          reduzir usando a regra 28 (exp_stmt)
+    '{'          reduzir usando a regra 28 (exp_stmt)
+    '}'          reduzir usando a regra 28 (exp_stmt)
+
+
+Estado 307
+
+   33 assing_exp: ID error •
+
+    ')'  reduzir usando a regra 33 (assing_exp)
+
+
+Estado 308
+
+   32 assing_exp: ID ASSIGN • simple_exp
+
+    ID           deslocar, e ir ao estado 163
+    INT          deslocar, e ir ao estado 164
+    FLOAT        deslocar, e ir ao estado 165
+    NIL          deslocar, e ir ao estado 166
+    SUM_OP       deslocar, e ir ao estado 167
+    EXCLAMATION  deslocar, e ir ao estado 168
+    '?'          deslocar, e ir ao estado 169
+    '%'          deslocar, e ir ao estado 170
+    STRING       deslocar, e ir ao estado 171
+    '('          deslocar, e ir ao estado 172
+
+    simple_exp     ir ao estado 355
+    list_exp       ir ao estado 173
+    bin_exp        ir ao estado 174
+    unary_log_exp  ir ao estado 175
+    rel_exp        ir ao estado 176
+    sum_exp        ir ao estado 177
+    mul_exp        ir ao estado 178
+    factor         ir ao estado 179
+    immutable      ir ao estado 180
+    call           ir ao estado 181
+    constant       ir ao estado 182
+
+
+Estado 309
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ';'     reduzir usando a regra 69 (call)
+
+
+Estado 310
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 356
+
+
+Estado 311
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ';'     reduzir usando a regra 65 (immutable)
+
+
+Estado 312
+
+   69 call: ID '(' ')' •
+
+    ';'  reduzir usando a regra 69 (call)
+
+
+Estado 313
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 357
+
+
+Estado 314
+
+   65 immutable: '(' simple_exp ')' •
+
+    ';'  reduzir usando a regra 65 (immutable)
+
+
+Estado 315
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ':'     reduzir usando a regra 69 (call)
+    MAP     reduzir usando a regra 69 (call)
+    FILTER  reduzir usando a regra 69 (call)
+    ')'     reduzir usando a regra 69 (call)
+
+
+Estado 316
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 358
+
+
+Estado 317
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 359
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 360
+    constant       ir ao estado 202
+
+
+Estado 318
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 361
+
+
+Estado 319
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 362
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 363
+    constant       ir ao estado 202
+
+
+Estado 320
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 364
+
+
+Estado 321
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ':'     reduzir usando a regra 65 (immutable)
+    MAP     reduzir usando a regra 65 (immutable)
+    FILTER  reduzir usando a regra 65 (immutable)
+    ')'     reduzir usando a regra 65 (immutable)
+
+
+Estado 322
+
+   52 bin_exp: bin_exp LOG_OP unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 52 (bin_exp)
+    ')'     reduzir usando a regra 52 (bin_exp)
+
+
+Estado 323
+
+   56 rel_exp: rel_exp REL_OP sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 258
+
+    REL_OP  reduzir usando a regra 56 (rel_exp)
+    LOG_OP  reduzir usando a regra 56 (rel_exp)
+    ')'     reduzir usando a regra 56 (rel_exp)
+
+
+Estado 324
+
+   58 sum_exp: sum_exp SUM_OP mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 259
+
+    SUM_OP  reduzir usando a regra 58 (sum_exp)
+    REL_OP  reduzir usando a regra 58 (sum_exp)
+    LOG_OP  reduzir usando a regra 58 (sum_exp)
+    ')'     reduzir usando a regra 58 (sum_exp)
+
+
+Estado 325
+
+   60 mul_exp: mul_exp MUL_OP factor •
+
+    MUL_OP  reduzir usando a regra 60 (mul_exp)
+    SUM_OP  reduzir usando a regra 60 (mul_exp)
+    REL_OP  reduzir usando a regra 60 (mul_exp)
+    LOG_OP  reduzir usando a regra 60 (mul_exp)
+    ')'     reduzir usando a regra 60 (mul_exp)
+
+
+Estado 326
+
+   47 list_exp: factor ':' factor •
+
+    ')'  reduzir usando a regra 47 (list_exp)
+
+
+Estado 327
+
+   50 list_exp: factor MAP factor •
+
+    ')'  reduzir usando a regra 50 (list_exp)
+
+
+Estado 328
+
+   51 list_exp: factor FILTER factor •
+
+    ')'  reduzir usando a regra 51 (list_exp)
+
+
+Estado 329
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ':'     reduzir usando a regra 69 (call)
+    MAP     reduzir usando a regra 69 (call)
+    FILTER  reduzir usando a regra 69 (call)
+    ','     reduzir usando a regra 69 (call)
+    ')'     reduzir usando a regra 69 (call)
+
+
+Estado 330
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 365
+
+
+Estado 331
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 366
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 367
+    constant       ir ao estado 202
+
+
+Estado 332
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 368
+
+
+Estado 333
+
+   68 call: ID '(' • args ')'
+   69     | ID '(' • ')'
+
+    ID           deslocar, e ir ao estado 183
+    INT          deslocar, e ir ao estado 184
+    FLOAT        deslocar, e ir ao estado 185
+    NIL          deslocar, e ir ao estado 186
+    SUM_OP       deslocar, e ir ao estado 187
+    EXCLAMATION  deslocar, e ir ao estado 188
+    '?'          deslocar, e ir ao estado 189
+    '%'          deslocar, e ir ao estado 190
+    STRING       deslocar, e ir ao estado 191
+    '('          deslocar, e ir ao estado 192
+    ')'          deslocar, e ir ao estado 369
+
+    simple_exp     ir ao estado 62
+    list_exp       ir ao estado 193
+    bin_exp        ir ao estado 194
+    unary_log_exp  ir ao estado 195
+    rel_exp        ir ao estado 196
+    sum_exp        ir ao estado 197
+    mul_exp        ir ao estado 198
+    factor         ir ao estado 199
+    immutable      ir ao estado 200
+    call           ir ao estado 201
+    args           ir ao estado 370
+    constant       ir ao estado 202
+
+
+Estado 334
+
+   65 immutable: '(' simple_exp • ')'
+
+    ')'  deslocar, e ir ao estado 371
+
+
+Estado 335
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ':'     reduzir usando a regra 65 (immutable)
+    MAP     reduzir usando a regra 65 (immutable)
+    FILTER  reduzir usando a regra 65 (immutable)
+    ','     reduzir usando a regra 65 (immutable)
+    ')'     reduzir usando a regra 65 (immutable)
+
+
+Estado 336
+
+   52 bin_exp: bin_exp LOG_OP unary_log_exp •
+
+    LOG_OP  reduzir usando a regra 52 (bin_exp)
+    ','     reduzir usando a regra 52 (bin_exp)
+    ')'     reduzir usando a regra 52 (bin_exp)
+
+
+Estado 337
+
+   56 rel_exp: rel_exp REL_OP sum_exp •
+   58 sum_exp: sum_exp • SUM_OP mul_exp
+
+    SUM_OP  deslocar, e ir ao estado 290
+
+    REL_OP  reduzir usando a regra 56 (rel_exp)
+    LOG_OP  reduzir usando a regra 56 (rel_exp)
+    ','     reduzir usando a regra 56 (rel_exp)
+    ')'     reduzir usando a regra 56 (rel_exp)
+
+
+Estado 338
+
+   58 sum_exp: sum_exp SUM_OP mul_exp •
+   60 mul_exp: mul_exp • MUL_OP factor
+
+    MUL_OP  deslocar, e ir ao estado 291
+
+    SUM_OP  reduzir usando a regra 58 (sum_exp)
+    REL_OP  reduzir usando a regra 58 (sum_exp)
+    LOG_OP  reduzir usando a regra 58 (sum_exp)
+    ','     reduzir usando a regra 58 (sum_exp)
+    ')'     reduzir usando a regra 58 (sum_exp)
+
+
+Estado 339
+
+   60 mul_exp: mul_exp MUL_OP factor •
+
+    MUL_OP  reduzir usando a regra 60 (mul_exp)
+    SUM_OP  reduzir usando a regra 60 (mul_exp)
+    REL_OP  reduzir usando a regra 60 (mul_exp)
+    LOG_OP  reduzir usando a regra 60 (mul_exp)
+    ','     reduzir usando a regra 60 (mul_exp)
+    ')'     reduzir usando a regra 60 (mul_exp)
+
+
+Estado 340
+
+   47 list_exp: factor ':' factor •
+
+    ','  reduzir usando a regra 47 (list_exp)
+    ')'  reduzir usando a regra 47 (list_exp)
+
+
+Estado 341
+
+   50 list_exp: factor MAP factor •
+
+    ','  reduzir usando a regra 50 (list_exp)
+    ')'  reduzir usando a regra 50 (list_exp)
+
+
+Estado 342
+
+   51 list_exp: factor FILTER factor •
+
+    ','  reduzir usando a regra 51 (list_exp)
+    ')'  reduzir usando a regra 51 (list_exp)
+
+
+Estado 343
+
+   34 block_stmt: '{' stmt_list '}' •
+
+    ID           reduzir usando a regra 34 (block_stmt)
+    INT          reduzir usando a regra 34 (block_stmt)
+    FLOAT        reduzir usando a regra 34 (block_stmt)
+    NIL          reduzir usando a regra 34 (block_stmt)
+    IF           reduzir usando a regra 34 (block_stmt)
+    FOR          reduzir usando a regra 34 (block_stmt)
+    RETURN       reduzir usando a regra 34 (block_stmt)
+    TYPE         reduzir usando a regra 34 (block_stmt)
+    WRITE        reduzir usando a regra 34 (block_stmt)
+    WRITELN      reduzir usando a regra 34 (block_stmt)
+    READ         reduzir usando a regra 34 (block_stmt)
+    SUM_OP       reduzir usando a regra 34 (block_stmt)
+    EXCLAMATION  reduzir usando a regra 34 (block_stmt)
+    '?'          reduzir usando a regra 34 (block_stmt)
+    '%'          reduzir usando a regra 34 (block_stmt)
+    STRING       reduzir usando a regra 34 (block_stmt)
+    ';'          reduzir usando a regra 34 (block_stmt)
+    '('          reduzir usando a regra 34 (block_stmt)
+    '{'          reduzir usando a regra 34 (block_stmt)
+    '}'          reduzir usando a regra 34 (block_stmt)
+
+
+Estado 344
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp ';' •
+
+    ID           reduzir usando a regra 8 (var_decl_with_assing)
+    INT          reduzir usando a regra 8 (var_decl_with_assing)
+    FLOAT        reduzir usando a regra 8 (var_decl_with_assing)
+    NIL          reduzir usando a regra 8 (var_decl_with_assing)
+    IF           reduzir usando a regra 8 (var_decl_with_assing)
+    FOR          reduzir usando a regra 8 (var_decl_with_assing)
+    RETURN       reduzir usando a regra 8 (var_decl_with_assing)
+    TYPE         reduzir usando a regra 8 (var_decl_with_assing)
+    WRITE        reduzir usando a regra 8 (var_decl_with_assing)
+    WRITELN      reduzir usando a regra 8 (var_decl_with_assing)
+    READ         reduzir usando a regra 8 (var_decl_with_assing)
+    SUM_OP       reduzir usando a regra 8 (var_decl_with_assing)
+    EXCLAMATION  reduzir usando a regra 8 (var_decl_with_assing)
+    '?'          reduzir usando a regra 8 (var_decl_with_assing)
+    '%'          reduzir usando a regra 8 (var_decl_with_assing)
+    STRING       reduzir usando a regra 8 (var_decl_with_assing)
+    ';'          reduzir usando a regra 8 (var_decl_with_assing)
+    '('          reduzir usando a regra 8 (var_decl_with_assing)
+    '{'          reduzir usando a regra 8 (var_decl_with_assing)
+    '}'          reduzir usando a regra 8 (var_decl_with_assing)
+
+
+Estado 345
+
+   38 if_stmt: IF '(' simple_exp • ')' statement
+   39        | IF '(' simple_exp • ')' statement ELSE statement
+
+    ')'  deslocar, e ir ao estado 372
+
+
+Estado 346
+
+   27 for_stmt: FOR '(' error • ';' simple_exp ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 373
+
+
+Estado 347
+
+   26 for_stmt: FOR '(' assing_exp • ';' simple_exp ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 374
+
+
+Estado 348
+
+   41 return_stmt: RETURN exp ';' •
+
+    ID           reduzir usando a regra 41 (return_stmt)
+    INT          reduzir usando a regra 41 (return_stmt)
+    FLOAT        reduzir usando a regra 41 (return_stmt)
+    NIL          reduzir usando a regra 41 (return_stmt)
+    IF           reduzir usando a regra 41 (return_stmt)
+    ELSE         reduzir usando a regra 41 (return_stmt)
+    FOR          reduzir usando a regra 41 (return_stmt)
+    RETURN       reduzir usando a regra 41 (return_stmt)
+    TYPE         reduzir usando a regra 41 (return_stmt)
+    WRITE        reduzir usando a regra 41 (return_stmt)
+    WRITELN      reduzir usando a regra 41 (return_stmt)
+    READ         reduzir usando a regra 41 (return_stmt)
+    SUM_OP       reduzir usando a regra 41 (return_stmt)
+    EXCLAMATION  reduzir usando a regra 41 (return_stmt)
+    '?'          reduzir usando a regra 41 (return_stmt)
+    '%'          reduzir usando a regra 41 (return_stmt)
+    STRING       reduzir usando a regra 41 (return_stmt)
+    ';'          reduzir usando a regra 41 (return_stmt)
+    '('          reduzir usando a regra 41 (return_stmt)
+    '{'          reduzir usando a regra 41 (return_stmt)
+    '}'          reduzir usando a regra 41 (return_stmt)
+
+
+Estado 349
+
+    8 var_decl_with_assing: TYPE ID ASSIGN • simple_exp ';'
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 375
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 350
+
+    7 var_decl: TYPE ID ';' •
+
+    ID           reduzir usando a regra 7 (var_decl)
+    INT          reduzir usando a regra 7 (var_decl)
+    FLOAT        reduzir usando a regra 7 (var_decl)
+    NIL          reduzir usando a regra 7 (var_decl)
+    IF           reduzir usando a regra 7 (var_decl)
+    ELSE         reduzir usando a regra 7 (var_decl)
+    FOR          reduzir usando a regra 7 (var_decl)
+    RETURN       reduzir usando a regra 7 (var_decl)
+    TYPE         reduzir usando a regra 7 (var_decl)
+    WRITE        reduzir usando a regra 7 (var_decl)
+    WRITELN      reduzir usando a regra 7 (var_decl)
+    READ         reduzir usando a regra 7 (var_decl)
+    SUM_OP       reduzir usando a regra 7 (var_decl)
+    EXCLAMATION  reduzir usando a regra 7 (var_decl)
+    '?'          reduzir usando a regra 7 (var_decl)
+    '%'          reduzir usando a regra 7 (var_decl)
+    STRING       reduzir usando a regra 7 (var_decl)
+    ';'          reduzir usando a regra 7 (var_decl)
+    '('          reduzir usando a regra 7 (var_decl)
+    '{'          reduzir usando a regra 7 (var_decl)
+    '}'          reduzir usando a regra 7 (var_decl)
+
+
+Estado 351
+
+   42 write_stmt: WRITE '(' simple_exp • ')' ';'
+
+    ')'  deslocar, e ir ao estado 376
+
+
+Estado 352
+
+   43 writeln_stmt: WRITELN '(' simple_exp • ')' ';'
+
+    ')'  deslocar, e ir ao estado 377
+
+
+Estado 353
+
+   44 read_stmt: READ '(' ID • ')' ';'
+
+    ')'  deslocar, e ir ao estado 378
+
+
+Estado 354
+
+   34 block_stmt: '{' stmt_list '}' •
+
+    ID           reduzir usando a regra 34 (block_stmt)
+    INT          reduzir usando a regra 34 (block_stmt)
+    FLOAT        reduzir usando a regra 34 (block_stmt)
+    NIL          reduzir usando a regra 34 (block_stmt)
+    IF           reduzir usando a regra 34 (block_stmt)
+    ELSE         reduzir usando a regra 34 (block_stmt)
+    FOR          reduzir usando a regra 34 (block_stmt)
+    RETURN       reduzir usando a regra 34 (block_stmt)
+    TYPE         reduzir usando a regra 34 (block_stmt)
+    WRITE        reduzir usando a regra 34 (block_stmt)
+    WRITELN      reduzir usando a regra 34 (block_stmt)
+    READ         reduzir usando a regra 34 (block_stmt)
+    SUM_OP       reduzir usando a regra 34 (block_stmt)
+    EXCLAMATION  reduzir usando a regra 34 (block_stmt)
+    '?'          reduzir usando a regra 34 (block_stmt)
+    '%'          reduzir usando a regra 34 (block_stmt)
+    STRING       reduzir usando a regra 34 (block_stmt)
+    ';'          reduzir usando a regra 34 (block_stmt)
+    '('          reduzir usando a regra 34 (block_stmt)
+    '{'          reduzir usando a regra 34 (block_stmt)
+    '}'          reduzir usando a regra 34 (block_stmt)
+
+
+Estado 355
+
+   32 assing_exp: ID ASSIGN simple_exp •
+
+    ')'  reduzir usando a regra 32 (assing_exp)
+
+
+Estado 356
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ';'     reduzir usando a regra 68 (call)
+
+
+Estado 357
+
+   68 call: ID '(' args ')' •
+
+    ';'  reduzir usando a regra 68 (call)
+
+
+Estado 358
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ':'     reduzir usando a regra 68 (call)
+    MAP     reduzir usando a regra 68 (call)
+    FILTER  reduzir usando a regra 68 (call)
+    ')'     reduzir usando a regra 68 (call)
+
+
+Estado 359
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ')'     reduzir usando a regra 69 (call)
+
+
+Estado 360
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 379
+
+
+Estado 361
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ')'     reduzir usando a regra 65 (immutable)
+
+
+Estado 362
+
+   69 call: ID '(' ')' •
+
+    ')'  reduzir usando a regra 69 (call)
+
+
+Estado 363
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 380
+
+
+Estado 364
+
+   65 immutable: '(' simple_exp ')' •
+
+    ')'  reduzir usando a regra 65 (immutable)
+
+
+Estado 365
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ':'     reduzir usando a regra 68 (call)
+    MAP     reduzir usando a regra 68 (call)
+    FILTER  reduzir usando a regra 68 (call)
+    ','     reduzir usando a regra 68 (call)
+    ')'     reduzir usando a regra 68 (call)
+
+
+Estado 366
+
+   69 call: ID '(' ')' •
+
+    MUL_OP  reduzir usando a regra 69 (call)
+    SUM_OP  reduzir usando a regra 69 (call)
+    REL_OP  reduzir usando a regra 69 (call)
+    LOG_OP  reduzir usando a regra 69 (call)
+    ','     reduzir usando a regra 69 (call)
+    ')'     reduzir usando a regra 69 (call)
+
+
+Estado 367
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 381
+
+
+Estado 368
+
+   65 immutable: '(' simple_exp ')' •
+
+    MUL_OP  reduzir usando a regra 65 (immutable)
+    SUM_OP  reduzir usando a regra 65 (immutable)
+    REL_OP  reduzir usando a regra 65 (immutable)
+    LOG_OP  reduzir usando a regra 65 (immutable)
+    ','     reduzir usando a regra 65 (immutable)
+    ')'     reduzir usando a regra 65 (immutable)
+
+
+Estado 369
+
+   69 call: ID '(' ')' •
+
+    ','  reduzir usando a regra 69 (call)
+    ')'  reduzir usando a regra 69 (call)
+
+
+Estado 370
+
+   68 call: ID '(' args • ')'
+   70 args: args • ',' simple_exp
+
+    ','  deslocar, e ir ao estado 76
+    ')'  deslocar, e ir ao estado 382
+
+
+Estado 371
+
+   65 immutable: '(' simple_exp ')' •
+
+    ','  reduzir usando a regra 65 (immutable)
+    ')'  reduzir usando a regra 65 (immutable)
+
+
+Estado 372
+
+   38 if_stmt: IF '(' simple_exp ')' • statement
+   39        | IF '(' simple_exp ')' • statement ELSE statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 206
+    FOR          deslocar, e ir ao estado 207
+    RETURN       deslocar, e ir ao estado 208
+    TYPE         deslocar, e ir ao estado 209
+    WRITE        deslocar, e ir ao estado 210
+    WRITELN      deslocar, e ir ao estado 211
+    READ         deslocar, e ir ao estado 212
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 213
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 214
+
+    var_decl              ir ao estado 215
+    var_decl_with_assing  ir ao estado 216
+    statement             ir ao estado 383
+    for_stmt              ir ao estado 217
+    exp_stmt              ir ao estado 218
+    exp                   ir ao estado 219
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 220
+    if_stmt               ir ao estado 221
+    return_stmt           ir ao estado 222
+    write_stmt            ir ao estado 223
+    writeln_stmt          ir ao estado 224
+    read_stmt             ir ao estado 225
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 373
+
+   27 for_stmt: FOR '(' error ';' • simple_exp ';' assing_exp ')' block_stmt
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 384
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 374
+
+   26 for_stmt: FOR '(' assing_exp ';' • simple_exp ';' assing_exp ')' block_stmt
+
+    ID           deslocar, e ir ao estado 15
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    '('          deslocar, e ir ao estado 24
+
+    simple_exp     ir ao estado 385
+    list_exp       ir ao estado 26
+    bin_exp        ir ao estado 27
+    unary_log_exp  ir ao estado 28
+    rel_exp        ir ao estado 29
+    sum_exp        ir ao estado 30
+    mul_exp        ir ao estado 31
+    factor         ir ao estado 32
+    immutable      ir ao estado 33
+    call           ir ao estado 34
+    constant       ir ao estado 35
+
+
+Estado 375
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp • ';'
+
+    ';'  deslocar, e ir ao estado 386
+
+
+Estado 376
+
+   42 write_stmt: WRITE '(' simple_exp ')' • ';'
+
+    ';'  deslocar, e ir ao estado 387
+
+
+Estado 377
+
+   43 writeln_stmt: WRITELN '(' simple_exp ')' • ';'
+
+    ';'  deslocar, e ir ao estado 388
+
+
+Estado 378
+
+   44 read_stmt: READ '(' ID ')' • ';'
+
+    ';'  deslocar, e ir ao estado 389
+
+
+Estado 379
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ')'     reduzir usando a regra 68 (call)
+
+
+Estado 380
+
+   68 call: ID '(' args ')' •
+
+    ')'  reduzir usando a regra 68 (call)
+
+
+Estado 381
+
+   68 call: ID '(' args ')' •
+
+    MUL_OP  reduzir usando a regra 68 (call)
+    SUM_OP  reduzir usando a regra 68 (call)
+    REL_OP  reduzir usando a regra 68 (call)
+    LOG_OP  reduzir usando a regra 68 (call)
+    ','     reduzir usando a regra 68 (call)
+    ')'     reduzir usando a regra 68 (call)
+
+
+Estado 382
+
+   68 call: ID '(' args ')' •
+
+    ','  reduzir usando a regra 68 (call)
+    ')'  reduzir usando a regra 68 (call)
+
+
+Estado 383
+
+   38 if_stmt: IF '(' simple_exp ')' statement •
+   39        | IF '(' simple_exp ')' statement • ELSE statement
+
+    ELSE  deslocar, e ir ao estado 390
+
+    ID           reduzir usando a regra 38 (if_stmt)
+    INT          reduzir usando a regra 38 (if_stmt)
+    FLOAT        reduzir usando a regra 38 (if_stmt)
+    NIL          reduzir usando a regra 38 (if_stmt)
+    IF           reduzir usando a regra 38 (if_stmt)
+    FOR          reduzir usando a regra 38 (if_stmt)
+    RETURN       reduzir usando a regra 38 (if_stmt)
+    TYPE         reduzir usando a regra 38 (if_stmt)
+    WRITE        reduzir usando a regra 38 (if_stmt)
+    WRITELN      reduzir usando a regra 38 (if_stmt)
+    READ         reduzir usando a regra 38 (if_stmt)
+    SUM_OP       reduzir usando a regra 38 (if_stmt)
+    EXCLAMATION  reduzir usando a regra 38 (if_stmt)
+    '?'          reduzir usando a regra 38 (if_stmt)
+    '%'          reduzir usando a regra 38 (if_stmt)
+    STRING       reduzir usando a regra 38 (if_stmt)
+    ';'          reduzir usando a regra 38 (if_stmt)
+    '('          reduzir usando a regra 38 (if_stmt)
+    '{'          reduzir usando a regra 38 (if_stmt)
+    '}'          reduzir usando a regra 38 (if_stmt)
+
+
+Estado 384
+
+   27 for_stmt: FOR '(' error ';' simple_exp • ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 391
+
+
+Estado 385
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp • ';' assing_exp ')' block_stmt
+
+    ';'  deslocar, e ir ao estado 392
+
+
+Estado 386
+
+    8 var_decl_with_assing: TYPE ID ASSIGN simple_exp ';' •
+
+    ID           reduzir usando a regra 8 (var_decl_with_assing)
+    INT          reduzir usando a regra 8 (var_decl_with_assing)
+    FLOAT        reduzir usando a regra 8 (var_decl_with_assing)
+    NIL          reduzir usando a regra 8 (var_decl_with_assing)
+    IF           reduzir usando a regra 8 (var_decl_with_assing)
+    ELSE         reduzir usando a regra 8 (var_decl_with_assing)
+    FOR          reduzir usando a regra 8 (var_decl_with_assing)
+    RETURN       reduzir usando a regra 8 (var_decl_with_assing)
+    TYPE         reduzir usando a regra 8 (var_decl_with_assing)
+    WRITE        reduzir usando a regra 8 (var_decl_with_assing)
+    WRITELN      reduzir usando a regra 8 (var_decl_with_assing)
+    READ         reduzir usando a regra 8 (var_decl_with_assing)
+    SUM_OP       reduzir usando a regra 8 (var_decl_with_assing)
+    EXCLAMATION  reduzir usando a regra 8 (var_decl_with_assing)
+    '?'          reduzir usando a regra 8 (var_decl_with_assing)
+    '%'          reduzir usando a regra 8 (var_decl_with_assing)
+    STRING       reduzir usando a regra 8 (var_decl_with_assing)
+    ';'          reduzir usando a regra 8 (var_decl_with_assing)
+    '('          reduzir usando a regra 8 (var_decl_with_assing)
+    '{'          reduzir usando a regra 8 (var_decl_with_assing)
+    '}'          reduzir usando a regra 8 (var_decl_with_assing)
+
+
+Estado 387
+
+   42 write_stmt: WRITE '(' simple_exp ')' ';' •
+
+    ID           reduzir usando a regra 42 (write_stmt)
+    INT          reduzir usando a regra 42 (write_stmt)
+    FLOAT        reduzir usando a regra 42 (write_stmt)
+    NIL          reduzir usando a regra 42 (write_stmt)
+    IF           reduzir usando a regra 42 (write_stmt)
+    ELSE         reduzir usando a regra 42 (write_stmt)
+    FOR          reduzir usando a regra 42 (write_stmt)
+    RETURN       reduzir usando a regra 42 (write_stmt)
+    TYPE         reduzir usando a regra 42 (write_stmt)
+    WRITE        reduzir usando a regra 42 (write_stmt)
+    WRITELN      reduzir usando a regra 42 (write_stmt)
+    READ         reduzir usando a regra 42 (write_stmt)
+    SUM_OP       reduzir usando a regra 42 (write_stmt)
+    EXCLAMATION  reduzir usando a regra 42 (write_stmt)
+    '?'          reduzir usando a regra 42 (write_stmt)
+    '%'          reduzir usando a regra 42 (write_stmt)
+    STRING       reduzir usando a regra 42 (write_stmt)
+    ';'          reduzir usando a regra 42 (write_stmt)
+    '('          reduzir usando a regra 42 (write_stmt)
+    '{'          reduzir usando a regra 42 (write_stmt)
+    '}'          reduzir usando a regra 42 (write_stmt)
+
+
+Estado 388
+
+   43 writeln_stmt: WRITELN '(' simple_exp ')' ';' •
+
+    ID           reduzir usando a regra 43 (writeln_stmt)
+    INT          reduzir usando a regra 43 (writeln_stmt)
+    FLOAT        reduzir usando a regra 43 (writeln_stmt)
+    NIL          reduzir usando a regra 43 (writeln_stmt)
+    IF           reduzir usando a regra 43 (writeln_stmt)
+    ELSE         reduzir usando a regra 43 (writeln_stmt)
+    FOR          reduzir usando a regra 43 (writeln_stmt)
+    RETURN       reduzir usando a regra 43 (writeln_stmt)
+    TYPE         reduzir usando a regra 43 (writeln_stmt)
+    WRITE        reduzir usando a regra 43 (writeln_stmt)
+    WRITELN      reduzir usando a regra 43 (writeln_stmt)
+    READ         reduzir usando a regra 43 (writeln_stmt)
+    SUM_OP       reduzir usando a regra 43 (writeln_stmt)
+    EXCLAMATION  reduzir usando a regra 43 (writeln_stmt)
+    '?'          reduzir usando a regra 43 (writeln_stmt)
+    '%'          reduzir usando a regra 43 (writeln_stmt)
+    STRING       reduzir usando a regra 43 (writeln_stmt)
+    ';'          reduzir usando a regra 43 (writeln_stmt)
+    '('          reduzir usando a regra 43 (writeln_stmt)
+    '{'          reduzir usando a regra 43 (writeln_stmt)
+    '}'          reduzir usando a regra 43 (writeln_stmt)
+
+
+Estado 389
+
+   44 read_stmt: READ '(' ID ')' ';' •
+
+    ID           reduzir usando a regra 44 (read_stmt)
+    INT          reduzir usando a regra 44 (read_stmt)
+    FLOAT        reduzir usando a regra 44 (read_stmt)
+    NIL          reduzir usando a regra 44 (read_stmt)
+    IF           reduzir usando a regra 44 (read_stmt)
+    ELSE         reduzir usando a regra 44 (read_stmt)
+    FOR          reduzir usando a regra 44 (read_stmt)
+    RETURN       reduzir usando a regra 44 (read_stmt)
+    TYPE         reduzir usando a regra 44 (read_stmt)
+    WRITE        reduzir usando a regra 44 (read_stmt)
+    WRITELN      reduzir usando a regra 44 (read_stmt)
+    READ         reduzir usando a regra 44 (read_stmt)
+    SUM_OP       reduzir usando a regra 44 (read_stmt)
+    EXCLAMATION  reduzir usando a regra 44 (read_stmt)
+    '?'          reduzir usando a regra 44 (read_stmt)
+    '%'          reduzir usando a regra 44 (read_stmt)
+    STRING       reduzir usando a regra 44 (read_stmt)
+    ';'          reduzir usando a regra 44 (read_stmt)
+    '('          reduzir usando a regra 44 (read_stmt)
+    '{'          reduzir usando a regra 44 (read_stmt)
+    '}'          reduzir usando a regra 44 (read_stmt)
+
+
+Estado 390
+
+   39 if_stmt: IF '(' simple_exp ')' statement ELSE • statement
+
+    ID           deslocar, e ir ao estado 78
+    INT          deslocar, e ir ao estado 16
+    FLOAT        deslocar, e ir ao estado 17
+    NIL          deslocar, e ir ao estado 18
+    IF           deslocar, e ir ao estado 206
+    FOR          deslocar, e ir ao estado 207
+    RETURN       deslocar, e ir ao estado 208
+    TYPE         deslocar, e ir ao estado 209
+    WRITE        deslocar, e ir ao estado 210
+    WRITELN      deslocar, e ir ao estado 211
+    READ         deslocar, e ir ao estado 212
+    SUM_OP       deslocar, e ir ao estado 19
+    EXCLAMATION  deslocar, e ir ao estado 20
+    '?'          deslocar, e ir ao estado 21
+    '%'          deslocar, e ir ao estado 22
+    STRING       deslocar, e ir ao estado 23
+    ';'          deslocar, e ir ao estado 213
+    '('          deslocar, e ir ao estado 24
+    '{'          deslocar, e ir ao estado 214
+
+    var_decl              ir ao estado 215
+    var_decl_with_assing  ir ao estado 216
+    statement             ir ao estado 393
+    for_stmt              ir ao estado 217
+    exp_stmt              ir ao estado 218
+    exp                   ir ao estado 219
+    assing_exp            ir ao estado 94
+    block_stmt            ir ao estado 220
+    if_stmt               ir ao estado 221
+    return_stmt           ir ao estado 222
+    write_stmt            ir ao estado 223
+    writeln_stmt          ir ao estado 224
+    read_stmt             ir ao estado 225
+    simple_exp            ir ao estado 101
+    list_exp              ir ao estado 26
+    bin_exp               ir ao estado 27
+    unary_log_exp         ir ao estado 28
+    rel_exp               ir ao estado 29
+    sum_exp               ir ao estado 30
+    mul_exp               ir ao estado 31
+    factor                ir ao estado 32
+    immutable             ir ao estado 33
+    call                  ir ao estado 34
+    constant              ir ao estado 35
+
+
+Estado 391
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' • assing_exp ')' block_stmt
+
+    ID  deslocar, e ir ao estado 226
+
+    assing_exp  ir ao estado 394
+
+
+Estado 392
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' • assing_exp ')' block_stmt
+
+    ID  deslocar, e ir ao estado 226
+
+    assing_exp  ir ao estado 395
+
+
+Estado 393
+
+   39 if_stmt: IF '(' simple_exp ')' statement ELSE statement •
+
+    ID           reduzir usando a regra 39 (if_stmt)
+    INT          reduzir usando a regra 39 (if_stmt)
+    FLOAT        reduzir usando a regra 39 (if_stmt)
+    NIL          reduzir usando a regra 39 (if_stmt)
+    IF           reduzir usando a regra 39 (if_stmt)
+    ELSE         reduzir usando a regra 39 (if_stmt)
+    FOR          reduzir usando a regra 39 (if_stmt)
+    RETURN       reduzir usando a regra 39 (if_stmt)
+    TYPE         reduzir usando a regra 39 (if_stmt)
+    WRITE        reduzir usando a regra 39 (if_stmt)
+    WRITELN      reduzir usando a regra 39 (if_stmt)
+    READ         reduzir usando a regra 39 (if_stmt)
+    SUM_OP       reduzir usando a regra 39 (if_stmt)
+    EXCLAMATION  reduzir usando a regra 39 (if_stmt)
+    '?'          reduzir usando a regra 39 (if_stmt)
+    '%'          reduzir usando a regra 39 (if_stmt)
+    STRING       reduzir usando a regra 39 (if_stmt)
+    ';'          reduzir usando a regra 39 (if_stmt)
+    '('          reduzir usando a regra 39 (if_stmt)
+    '{'          reduzir usando a regra 39 (if_stmt)
+    '}'          reduzir usando a regra 39 (if_stmt)
+
+
+Estado 394
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp • ')' block_stmt
+
+    ')'  deslocar, e ir ao estado 396
+
+
+Estado 395
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp • ')' block_stmt
+
+    ')'  deslocar, e ir ao estado 397
+
+
+Estado 396
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 214
+
+    block_stmt  ir ao estado 398
+
+
+Estado 397
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp ')' • block_stmt
+
+    '{'  deslocar, e ir ao estado 214
+
+    block_stmt  ir ao estado 399
+
+
+Estado 398
+
+   27 for_stmt: FOR '(' error ';' simple_exp ';' assing_exp ')' block_stmt •
+
+    ID           reduzir usando a regra 27 (for_stmt)
+    INT          reduzir usando a regra 27 (for_stmt)
+    FLOAT        reduzir usando a regra 27 (for_stmt)
+    NIL          reduzir usando a regra 27 (for_stmt)
+    IF           reduzir usando a regra 27 (for_stmt)
+    ELSE         reduzir usando a regra 27 (for_stmt)
+    FOR          reduzir usando a regra 27 (for_stmt)
+    RETURN       reduzir usando a regra 27 (for_stmt)
+    TYPE         reduzir usando a regra 27 (for_stmt)
+    WRITE        reduzir usando a regra 27 (for_stmt)
+    WRITELN      reduzir usando a regra 27 (for_stmt)
+    READ         reduzir usando a regra 27 (for_stmt)
+    SUM_OP       reduzir usando a regra 27 (for_stmt)
+    EXCLAMATION  reduzir usando a regra 27 (for_stmt)
+    '?'          reduzir usando a regra 27 (for_stmt)
+    '%'          reduzir usando a regra 27 (for_stmt)
+    STRING       reduzir usando a regra 27 (for_stmt)
+    ';'          reduzir usando a regra 27 (for_stmt)
+    '('          reduzir usando a regra 27 (for_stmt)
+    '{'          reduzir usando a regra 27 (for_stmt)
+    '}'          reduzir usando a regra 27 (for_stmt)
+
+
+Estado 399
+
+   26 for_stmt: FOR '(' assing_exp ';' simple_exp ';' assing_exp ')' block_stmt •
+
+    ID           reduzir usando a regra 26 (for_stmt)
+    INT          reduzir usando a regra 26 (for_stmt)
+    FLOAT        reduzir usando a regra 26 (for_stmt)
+    NIL          reduzir usando a regra 26 (for_stmt)
+    IF           reduzir usando a regra 26 (for_stmt)
+    ELSE         reduzir usando a regra 26 (for_stmt)
+    FOR          reduzir usando a regra 26 (for_stmt)
+    RETURN       reduzir usando a regra 26 (for_stmt)
+    TYPE         reduzir usando a regra 26 (for_stmt)
+    WRITE        reduzir usando a regra 26 (for_stmt)
+    WRITELN      reduzir usando a regra 26 (for_stmt)
+    READ         reduzir usando a regra 26 (for_stmt)
+    SUM_OP       reduzir usando a regra 26 (for_stmt)
+    EXCLAMATION  reduzir usando a regra 26 (for_stmt)
+    '?'          reduzir usando a regra 26 (for_stmt)
+    '%'          reduzir usando a regra 26 (for_stmt)
+    STRING       reduzir usando a regra 26 (for_stmt)
+    ';'          reduzir usando a regra 26 (for_stmt)
+    '('          reduzir usando a regra 26 (for_stmt)
+    '{'          reduzir usando a regra 26 (for_stmt)
+    '}'          reduzir usando a regra 26 (for_stmt)

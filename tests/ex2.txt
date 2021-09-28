@@ -1,0 +1,34 @@
+int list konoha(float z, float list baby){
+    /* do nothing */
+    float list n;
+    float list nil = NIL;
+    n = 12 : nil;
+}
+
+int teste1;
+float teste2;
+float list teste3;
+int list teste4;
+
+int narutao(int n, int y) {
+
+    float i =  -435.7 * 14.22;
+	teste1 = NIL;
+
+    float n;
+    float m;
+
+    read(n);
+    read(m);
+
+    for(i = 0.0; i < n && (i < m || i == m); i = i + 1.2){
+        if(1){
+            //entra aqui
+            if(i > 3 && i <= 10){
+                write("Hello World");
+            }
+        }
+    }
+
+    return 2021;
+}

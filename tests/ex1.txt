@@ -1,0 +1,48 @@
+int graziane(int x, float list y){
+    y = x : y; 
+}
+
+float belo(float duduNobre){
+    // Dudu Nobre, grande sambista 
+    return (duduNobre + duduNobre * 2 - (duduNobre - 1));
+}
+
+float filter(float diogoNogueira){
+    return diogoNogueira <= (2 * 20 + 1);
+}
+
+int main(){
+    float list chorao;
+    int n;
+    chorao = graziane(2.3, chorao);
+    read(n);
+    int i;
+
+    /* 
+        Leia o livro "Comece pelo porque"
+    */
+
+    chorao = 99.1 : chorao;
+    chorao = 103.2 : chorao;
+    chorao = 8 : chorao;
+    chorao = 5 : chorao; 
+
+    for(i = 0; i < n; i = i +1){
+        chorao = belo >> chorao;
+    }
+
+    float list pericles;
+    pericles = filter << chorao;
+    write("Primeiro elemento: ");
+    write(?chorao);
+
+    write("Ultimo elemento: ");
+    write(!chorao);
+
+    chorao = %chorao; //nao te quero mais 
+
+    write("Primeiro elemento: ");
+    write(?chorao);
+
+    return 2021;
+}

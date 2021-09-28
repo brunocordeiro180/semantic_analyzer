@@ -1,0 +1,15 @@
+int list IL;
+float list FL;
+
+float int list read_list(int n,  y) {
+
+	i =  -435.7;
+	int list new;
+	new = NIL;
+	for (i < 1; i < n ; i = i + 1) {
+		int elem;
+		writeln(read);
+		read(elem);
+	}
+	return new;
+}
