@@ -1,4 +1,4 @@
-# Analisador Sintático
+# Analisador Semântico
 
 Para executar o programa abra este diretório pelo seu terminal e em seguida digite:
 
