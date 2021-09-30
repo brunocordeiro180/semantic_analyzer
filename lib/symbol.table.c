@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BHRED "\e[1;91m"
+#define RESET "\e[0m"
+
 SymbolList *head;
 
 extern void initializeTable()
@@ -22,7 +25,7 @@ extern Symbol *allocateToken(char *lexeme, int line, int column)
     return newToken;
 }
 
-extern void insertSymbol(char *lexeme, int line, int column, char *type, char *decl, int scope)
+extern Symbol* insertSymbol(char *lexeme, int line, int column, char *type, char *decl, int scope)
 {
     Symbol *newSymbol = (Symbol *)malloc(sizeof(Symbol));
     SymbolList *current = head;
@@ -51,16 +54,23 @@ extern void insertSymbol(char *lexeme, int line, int column, char *type, char *d
         current->next->symbol = newSymbol;
         current->next->next = NULL;
     }
+
+    return newSymbol;
 }
 
 extern void printSymbolTable()
 {
     printf("\n\n------------------------------------------------------------ SYMBOL TABLE ------------------------------------------------------------- \n\n");
-    printf("%-8s \t %-8s \t %-8s \t %-8s \t %-8s \t %-8s\n", "ID", "LINE", "COLUMN", "TYPE", "DECL", "SCOPE");
+    printf("%-8s \t %-8s \t %-8s \t %-8s \t %-8s \t %-8s\t %-8s\n", "ID", "LINE", "COLUMN", "TYPE", "DECL", "SCOPE", "PARAMS_N");
     SymbolList *current = head;
     while (current != NULL)
     {
-        printf("%-8s \t %-8d \t %-8d \t %-8s \t %-8s \t %-8d\n", current->symbol->lexeme, current->symbol->line, current->symbol->column, current->symbol->type, current->symbol->decl, current->symbol->scope);
+        printf("%-8s \t %-8d \t %-8d \t %-8s \t %-8s \t %-8d \t", current->symbol->lexeme, current->symbol->line, current->symbol->column, current->symbol->type, current->symbol->decl, current->symbol->scope);
+        if(strcmp(current->symbol->decl, "fun") == 0){
+            printf("%-8d\n", current->symbol->numberOfParams);
+        }else{
+            printf("%-8s\n", "---");
+        }
         current = current->next;
     }
 }
@@ -83,4 +93,46 @@ extern void freeTableRecursive(SymbolList *list)
 
     free(list->symbol);
     free(list);
+}
+
+extern void checkRedeclaration(char *lexeme, int scope, int* errosSemanticos, int linha, int coluna){
+    SymbolList *current = head;
+    while (current != NULL && current->symbol != NULL)
+    {
+        // printf("current->symbol->lexeme %s\n", current->symbol->lexeme);
+        // printf("current->symbol->scope %d\n", current->symbol->scope);
+        if(strcmp(current->symbol->lexeme, lexeme) == 0 && current->symbol->scope == scope){
+            *errosSemanticos = *errosSemanticos + 1;
+            printf(BHRED"SEMANTIC ERROR -> redeclaration of \'%s\'. Line %d Column %d\n"RESET, lexeme, linha, coluna);
+        }
+        current = current->next;
+    }
+}
+
+extern void findMain(int* errosSemanticos){
+    SymbolList *current = head;
+    while (current != NULL)
+    {
+        if(strcmp(current->symbol->lexeme, "main") == 0 && strcmp(current->symbol->decl, "fun") == 0){
+            return;
+        }
+        current = current->next;
+    }
+
+    *errosSemanticos = *errosSemanticos + 1;
+    printf(BHRED"SEMANTIC ERROR -> undefined reference to \"main\"\n"RESET);
+}
+
+extern void verifyDefinedId(char *lexeme, int linha, int coluna, int* errosSemanticos){
+    SymbolList *current = head;
+    while (current != NULL && current->symbol != NULL)
+    {
+        if(strcmp(current->symbol->lexeme, lexeme) == 0){
+            return;
+        }
+        current = current->next;
+    }
+
+    *errosSemanticos = *errosSemanticos + 1;
+    printf(BHRED"SEMANTIC ERROR -> Undeclared \'%s\'. Line %d Column %d\n"RESET, lexeme, linha, coluna);
 }

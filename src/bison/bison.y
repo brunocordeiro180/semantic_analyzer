@@ -19,6 +19,8 @@ extern Node *tree;
 extern int linhas;
 extern int colunas;
 int errors = 0;
+int errosSemanticos;
+int numberOfParams = 0;
 
 #define BHRED "\e[1;91m"
 #define RESET "\e[0m"
@@ -125,6 +127,7 @@ var_decl:
 		$$->leaf2 = createNode("\0");
 		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
 
+		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
 		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "var", $2.scope);
 	}
 ;
@@ -144,6 +147,7 @@ var_decl_with_assing:
 
 		$$->leaf4 = $4;
 
+		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
 		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "var", $2.scope);
 	}
 ;
@@ -161,7 +165,10 @@ fun_decl:
 		$$->leaf3 = $4;
 		$$->leaf4 = $6;
 
-		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun",$2.scope);
+		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
+		Symbol* createdSymbol = insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun",$2.scope);
+		createdSymbol->numberOfParams = numberOfParams + 1;
+		numberOfParams = 0;
 	}
 	| TYPE ID '(' ')' block_stmt {
 		$$ = createNode("fun_decl");
@@ -174,7 +181,10 @@ fun_decl:
 		
 		$$->leaf3 = $5;
 
-		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun", $2.scope);
+		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
+		Symbol* createdSymbol = insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun", $2.scope);
+		numberOfParams = 0;
+		createdSymbol->numberOfParams = numberOfParams;
 	}
 	| error {
 		yyerrok;
@@ -186,6 +196,7 @@ params:
 		$$ = createNode("\0");
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
+		numberOfParams = numberOfParams + 1;
 	}
 	| param_decl {
 		$$ = $1;
@@ -205,6 +216,7 @@ param_decl:
 		$$->leaf2 = createNode("\0");
 		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
 
+		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
 		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "param", (scopeId + 1));
 	}
 ;
@@ -288,6 +300,8 @@ assing_exp:
 		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
 
 		$$->leaf3 = $3;
+
+		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
 	}
 	| ID error {
 		yyerrok;
@@ -381,6 +395,8 @@ read_stmt:
 
 		$$->leaf2  = createNode("\0");
 		$$->leaf2->token = allocateToken($3.lexeme, $3.line, $3.column);
+
+		verifyDefinedId($3.lexeme, $3.line, $3.column, &errosSemanticos);
 	}
 ;
 
@@ -510,6 +526,8 @@ factor:
 	| ID {
 		$$ = createNode("\0");
 		$$->token = allocateToken($1.lexeme, $1.line, $1.column);
+
+		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
 	}
 ;
 
@@ -531,12 +549,16 @@ call:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $3;
+
+		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
 	}
 	| ID '(' ')' {
 		$$ = createNode("call");
 
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
+
+		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
 	}
 ;
 
@@ -573,7 +595,7 @@ constant:
 %%
 
 extern void yyerror(const char* s) {
-    printf(BHRED"ERROR -> ");
+    printf(BHRED"SYNTATIC ERROR -> ");
     printf("%s ", s);
 	printf("[Line %d, Column %d]\n"RESET, linhas, colunas);
 	errors++;
@@ -583,7 +605,8 @@ int main(int argc, char **argv){
 	initializeTable(symbolTable);
 	initializeScopeStack(scopeStack);
     yyparse();
-	if(!errors){
+	findMain(&errosSemanticos);
+	if(!errors && !errosSemanticos){
 		printf("\n\n--------------------------------------------------------------- TREE ---------------------------------------------------------------- \n\n");
 		printTree(tree, 1);
 		printSymbolTable(symbolTable);
