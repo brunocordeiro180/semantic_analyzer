@@ -1,7 +1,8 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-typedef struct symbol{
+typedef struct symbol
+{
     int line;
     int column;
     int scope;
@@ -12,19 +13,20 @@ typedef struct symbol{
     char decl[5];
 } Symbol;
 
-typedef struct symbolList{
+typedef struct symbolList
+{
     Symbol *symbol;
-    struct symbolList* next;
+    struct symbolList *next;
 } SymbolList;
 
 extern void initializeTable();
-extern Symbol* insertSymbol(char* lexeme,  int line, int column, char* type, char* isFunction, int scope);
-extern Symbol* allocateToken(char* lexeme, int line, int column);
+extern Symbol *insertSymbol(char *lexeme, int line, int column, char *type, char *isFunction, int scope);
+extern Symbol *allocateToken(char *lexeme, int line, int column);
 extern void printSymbolTable();
 extern void freeTable();
 extern void freeTableRecursive(SymbolList *list);
-extern void checkRedeclaration(char *lexeme, int scope, int* errosSemanticos, int linha, int coluna);
-extern void findMain(int* errosSemanticos);
-extern void verifyDefinedId(char *lexeme, int linha, int coluna, int* errosSemanticos);
+extern void checkRedeclaration(char *lexeme, int scope, int *errosSemanticos, int linha, int coluna);
+extern void findMain(int *errosSemanticos);
+extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
 
 #endif

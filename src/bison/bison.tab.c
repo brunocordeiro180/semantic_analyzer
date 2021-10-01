@@ -2630,7 +2630,7 @@ yyreduce:
 
 		(yyval.node)->leaf3 = (yyvsp[0].node);
 
-		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, &errosSemanticos);
+		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, scopeStack, &errosSemanticos);
 	}
 #line 2636 "src/bison/bison.tab.c"
     break;
@@ -2763,7 +2763,7 @@ yyreduce:
 		(yyval.node)->leaf2  = createNode("\0");
 		(yyval.node)->leaf2->token = allocateToken((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column);
 
-		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, &errosSemanticos);
+		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, scopeStack, &errosSemanticos);
 	}
 #line 2769 "src/bison/bison.tab.c"
     break;
@@ -2970,7 +2970,7 @@ yyreduce:
 		(yyval.node) = createNode("\0");
 		(yyval.node)->token = allocateToken((yyvsp[0].token).lexeme, (yyvsp[0].token).line, (yyvsp[0].token).column);
 
-		verifyDefinedId((yyvsp[0].token).lexeme, (yyvsp[0].token).line, (yyvsp[0].token).column, &errosSemanticos);
+		verifyDefinedId((yyvsp[0].token).lexeme, (yyvsp[0].token).line, (yyvsp[0].token).column ,scopeStack , &errosSemanticos);
 	}
 #line 2976 "src/bison/bison.tab.c"
     break;
@@ -3007,7 +3007,7 @@ yyreduce:
 		(yyval.node)->leaf1->token = allocateToken((yyvsp[-3].token).lexeme, (yyvsp[-3].token).line, (yyvsp[-3].token).column);
 		(yyval.node)->leaf2 = (yyvsp[-1].node);
 
-		verifyDefinedId((yyvsp[-3].token).lexeme, (yyvsp[-3].token).line, (yyvsp[-3].token).column, &errosSemanticos);
+		verifyDefinedId((yyvsp[-3].token).lexeme, (yyvsp[-3].token).line, (yyvsp[-3].token).column, scopeStack, &errosSemanticos);
 	}
 #line 3013 "src/bison/bison.tab.c"
     break;
@@ -3020,7 +3020,7 @@ yyreduce:
 		(yyval.node)->leaf1 = createNode("\0");
 		(yyval.node)->leaf1->token = allocateToken((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column);
 
-		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, &errosSemanticos);
+		verifyDefinedId((yyvsp[-2].token).lexeme, (yyvsp[-2].token).line, (yyvsp[-2].token).column, scopeStack, &errosSemanticos);
 	}
 #line 3026 "src/bison/bison.tab.c"
     break;

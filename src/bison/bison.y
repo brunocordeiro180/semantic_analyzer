@@ -301,7 +301,7 @@ assing_exp:
 
 		$$->leaf3 = $3;
 
-		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
+		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
 	}
 	| ID error {
 		yyerrok;
@@ -396,7 +396,7 @@ read_stmt:
 		$$->leaf2  = createNode("\0");
 		$$->leaf2->token = allocateToken($3.lexeme, $3.line, $3.column);
 
-		verifyDefinedId($3.lexeme, $3.line, $3.column, &errosSemanticos);
+		verifyDefinedId($3.lexeme, $3.line, $3.column, scopeStack, &errosSemanticos);
 	}
 ;
 
@@ -527,7 +527,7 @@ factor:
 		$$ = createNode("\0");
 		$$->token = allocateToken($1.lexeme, $1.line, $1.column);
 
-		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
+		verifyDefinedId($1.lexeme, $1.line, $1.column ,scopeStack , &errosSemanticos);
 	}
 ;
 
@@ -550,7 +550,7 @@ call:
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $3;
 
-		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
+		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
 	}
 	| ID '(' ')' {
 		$$ = createNode("call");
@@ -558,7 +558,7 @@ call:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 
-		verifyDefinedId($1.lexeme, $1.line, $1.column, &errosSemanticos);
+		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
 	}
 ;
 
