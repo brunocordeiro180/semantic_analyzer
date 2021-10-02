@@ -28,5 +28,6 @@ extern void freeTableRecursive(SymbolList *list);
 extern void checkRedeclaration(char *lexeme, int scope, int *errosSemanticos, int linha, int coluna);
 extern void findMain(int *errosSemanticos);
 extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
+extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs);
 
 #endif

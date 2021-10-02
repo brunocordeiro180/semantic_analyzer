@@ -1,7 +1,7 @@
 // #include <stdio.h>
 // #include <stdlib.h>
 // {0}
-int teste(){
+int teste(int a, int b){
     return 1; 
     // {0, 1}
 }
@@ -16,7 +16,7 @@ int main()
     {   
         // {0, 2, 3}
         int x;
-        a = a + teste; 
+        a = a + teste(); 
     }
 
     // {0, 2}

@@ -176,3 +176,29 @@ extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack
     *errosSemanticos = *errosSemanticos + 1;
     printf(BHRED "SEMANTIC ERROR -> Undeclared \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
 }
+
+extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs)
+{
+    SymbolList *current = head;
+    while (current != NULL && current->symbol != NULL)
+    {
+        if (strcmp(current->symbol->lexeme, lexeme) == 0 && strcmp(current->symbol->decl, "fun") == 0 && isInScope(current->symbol->scope, scopeStack))
+        {
+            printf("%s with %d arguments\n", current->symbol->lexeme, numberOfArgs);
+
+            if(current->symbol->numberOfParams < numberOfArgs){
+                 printf(BHRED "SEMANTIC ERROR -> Too many arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
+                 *errosSemanticos = *errosSemanticos + 1;
+                 return;
+            }
+
+            if(current->symbol->numberOfParams > numberOfArgs){
+                 printf(BHRED "SEMANTIC ERROR -> Too few arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
+                 *errosSemanticos = *errosSemanticos + 1;
+                 return;
+            }
+        }
+
+        current = current->next;
+    }
+}

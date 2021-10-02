@@ -21,6 +21,7 @@ extern int colunas;
 int errors = 0;
 int errosSemanticos;
 int numberOfParams = 0;
+int numberOfArguments = 0;
 
 #define BHRED "\e[1;91m"
 #define RESET "\e[0m"
@@ -549,8 +550,11 @@ call:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $3;
-
+		
 		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
+		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments);
+		numberOfArguments = 0;
+
 	}
 	| ID '(' ')' {
 		$$ = createNode("call");
@@ -559,6 +563,8 @@ call:
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 
 		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
+		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments);
+		numberOfArguments = 0;
 	}
 ;
 
@@ -567,9 +573,11 @@ args:
 		$$ = createNode("args");
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
+		numberOfArguments = numberOfArguments + 1;
 	}
 	| simple_exp {
 		$$ = $1;
+		numberOfArguments = numberOfArguments + 1;
 	}
 ;
 

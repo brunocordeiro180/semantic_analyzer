@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 78 "src/bison/bison.y"
+#line 79 "src/bison/bison.y"
 
     #include "token.h"
 	#include "node.h"
@@ -91,7 +91,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 83 "src/bison/bison.y"
+#line 84 "src/bison/bison.y"
 
 	Token token;
 	Node* node;
