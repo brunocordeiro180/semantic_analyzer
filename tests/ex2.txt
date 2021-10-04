@@ -1,7 +1,8 @@
 int list konoha(float z, float list baby){
     /* do nothing */
     float list n;
-    float list nil = NIL;
+    float list nil;
+    nil = NIL;
     n = 12 : nil;
 }
 
@@ -10,12 +11,12 @@ float teste2;
 float list teste3;
 int list teste4;
 
-int narutao(int n, int y) {
+int main(int n, int y) {
 
-    float i =  -435.7 * 14.22;
+    float i; 
+    i =  -435.7 * 14.22;
 	teste1 = NIL;
 
-    float n;
     float m;
 
     read(n);

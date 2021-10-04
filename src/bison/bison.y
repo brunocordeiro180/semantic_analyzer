@@ -46,7 +46,6 @@ int numberOfArguments = 0;
 %type <node> decl_list
 %type <node> decl
 %type <node> var_decl
-%type <node> var_decl_with_assing
 %type <node> fun_decl
 %type <node> params
 %type <node> param_decl
@@ -112,9 +111,6 @@ decl:
 	| fun_decl {
 		$$ =  $1;
 	}
-	| var_decl_with_assing{
-		$$ = $1;
-	}
 ;
 
 
@@ -127,26 +123,6 @@ var_decl:
 
 		$$->leaf2 = createNode("\0");
 		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
-
-		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
-		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "var", $2.scope);
-	}
-;
-
-var_decl_with_assing:
-	TYPE ID ASSIGN simple_exp ';'{
-		$$ = createNode("var_decl");
-		
-		$$->leaf1 = createNode("\0");
-		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
-
-		$$->leaf2 = createNode("\0");
-		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
-
-		$$->leaf3 = createNode("\0");
-		$$->leaf3->token = allocateToken($3.lexeme, $3.line, $3.column);
-
-		$$->leaf4 = $4;
 
 		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
 		insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "var", $2.scope);
@@ -245,9 +221,6 @@ statement:
 		$$ = $1;
 	}
 	| var_decl {
-		$$ = $1;
-	}
-	| var_decl_with_assing {
 		$$ = $1;
 	}
 	| for_stmt {
