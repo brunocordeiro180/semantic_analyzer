@@ -23,6 +23,12 @@ int errosSemanticos;
 int numberOfParams = 0;
 int numberOfArguments = 0;
 
+// functions
+
+void verifyIfIsList(int tipo, char *operator, int line, int column);
+
+// end functions
+
 #define BHRED "\e[1;91m"
 #define RESET "\e[0m"
 %}
@@ -398,12 +404,18 @@ list_exp:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $2;
+
+		int tipo = checkTypeListExp($2, scopeStack);
+		verifyIfIsList(tipo, "?", $1.line, $1.column);
 	}
 	| '%' factor {
 		$$ = createNode("list_exp"); 
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $2;
+
+		int tipo = checkTypeListExp($2, scopeStack);
+		verifyIfIsList(tipo, "%", $1.line, $1.column);
 	}
 	| factor MAP factor {
 		$$ = createNode("list_exp");
@@ -498,7 +510,7 @@ factor:
 		$$ = $1;
 	}
 	| ID {
-		$$ = createNode("\0");
+		$$ = createNode("identifier");
 		$$->token = allocateToken($1.lexeme, $1.line, $1.column);
 
 		verifyDefinedId($1.lexeme, $1.line, $1.column ,scopeStack , &errosSemanticos);
@@ -574,6 +586,35 @@ constant:
 ;	
 
 %%
+
+void verifyIfIsList(int tipo, char *operator, int line, int column){
+
+	char tipoString[30];
+
+	switch(tipo){
+		case 0:
+			strcpy(tipoString, "int");
+			break;
+		case 1:
+			strcpy(tipoString, "float");
+			break;
+		case 2:
+			strcpy(tipoString, "int list");
+			break;
+		case 3:
+			strcpy(tipoString, "float list");
+			break;
+		default:
+			strcpy(tipoString, "undefined");
+			break;
+	}
+
+
+	if(tipo != 2 && tipo != 3){
+		errosSemanticos = errosSemanticos + 1;
+		printf(BHRED"SEMANTIC ERROR -> Operator \'%s\' cannot be applied to type %s. Line %d Column %d\n"RESET, operator, tipoString, line, column);
+	}
+}
 
 extern void yyerror(const char* s) {
     printf(BHRED"SYNTATIC ERROR -> ");

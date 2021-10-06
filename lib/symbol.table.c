@@ -15,9 +15,9 @@ extern void initializeTable()
     head->next = NULL;
 }
 
-extern Symbol *allocateToken(char *lexeme, int line, int column)
+extern Token *allocateToken(char *lexeme, int line, int column)
 {
-    Symbol *newToken = (Symbol *)malloc(sizeof(Symbol));
+    Token *newToken = (Token *)malloc(sizeof(Token));
     strcpy(newToken->lexeme, lexeme);
     newToken->line = line;
     newToken->column = column;
@@ -184,7 +184,6 @@ extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int
     {
         if (strcmp(current->symbol->lexeme, lexeme) == 0 && strcmp(current->symbol->decl, "fun") == 0 && isInScope(current->symbol->scope, scopeStack))
         {
-            printf("%s with %d arguments\n", current->symbol->lexeme, numberOfArgs);
 
             if(current->symbol->numberOfParams < numberOfArgs){
                  printf(BHRED "SEMANTIC ERROR -> Too many arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
@@ -201,4 +200,26 @@ extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int
 
         current = current->next;
     }
+}
+
+extern int searchTypeInSymbolTable(char *lexeme, int *scopeStack)
+{
+    SymbolList *current = head;
+    while (current != NULL && current->symbol != NULL)
+    {
+        if (strcmp(current->symbol->lexeme, lexeme) == 0 && isInScope(current->symbol->scope, scopeStack))
+        {
+            if(strcmp(current->symbol->type, "int") == 0){
+                return 0;
+            }else if (strcmp(current->symbol->type, "float") == 0){
+               return 1; 
+            } else if (strcmp(current->symbol->type, "int list") == 0){
+               return 2; 
+            } else if(strcmp(current->symbol->type, "float list") == 0){
+               return 3; 
+            }
+        }
+        current = current->next;
+    }
+    return -1;
 }

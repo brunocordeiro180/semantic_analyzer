@@ -31,7 +31,7 @@ extern void printTree(Node *node, int depth)
         return;
     }
 
-    if (strcmp(node->name, "\0") != 0)
+    if (strcmp(node->name, "\0") != 0 && strcmp(node->name, "identifier") != 0)
     {
 
         for (int i = 0; i < depth; i++)
@@ -80,4 +80,32 @@ extern void freeTree(Node *tree)
     freeTree(tree->leaf5);
 
     free(tree);
+}
+
+extern int checkTypeListExp(Node *node, int *scopeStack)
+{
+    if (node)
+    {
+        if (strcmp(node->name, "identifier") == 0)
+        {
+            return searchTypeInSymbolTable(node->token->lexeme, scopeStack);
+        }
+        else
+        {
+            checkTypeListExp(node->leaf1, scopeStack);
+            checkTypeListExp(node->leaf2, scopeStack);
+            checkTypeListExp(node->leaf3, scopeStack);
+            checkTypeListExp(node->leaf4, scopeStack);
+            checkTypeListExp(node->leaf5, scopeStack);
+        }
+    }
+
+
+    return -1;
+
+    // printf("\n\n\n\n");
+
+    // printTree(node, 0);
+
+    // printf("\n\n\n\n");
 }

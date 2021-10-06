@@ -1,7 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-typedef struct
+typedef struct token
 {
     int line;
     int column;
