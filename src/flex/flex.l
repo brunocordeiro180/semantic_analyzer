@@ -61,7 +61,7 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
     return TYPE;
 } 
 
-{TIPO_DADO}[" "]"list"           { 
+{TIPO_DADO}[" \t"]+"list"           { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
     yylval.token.column = colunas;
@@ -140,7 +140,7 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
     return '?';
 }
 
-">>"                    { 
+"<<"                    { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
     yylval.token.column = colunas;
@@ -148,7 +148,7 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
     return FILTER;
 }
 
-"<<"                    { 
+">>"                    { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
     yylval.token.column = colunas;
@@ -196,7 +196,7 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
     return REL_OP;
 }
 
--?[0-9]*                { 
+[0-9]*                { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
     yylval.token.column = colunas;

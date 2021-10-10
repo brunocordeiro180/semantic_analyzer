@@ -32,5 +32,7 @@ extern void findMain(int *errosSemanticos);
 extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
 extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs);
 extern int searchTypeInSymbolTable(char *lexeme, int *scopeStack);
+extern int checkIfIsFunctionUnaryInSymbolTable(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
+extern char* convertIntToType(int tipo);
 
 #endif
