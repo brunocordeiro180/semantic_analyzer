@@ -262,6 +262,7 @@ for_stmt:
 exp_stmt:
 	exp ';' {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 	| ';' {
 		$$ = createNode("\0");
@@ -271,9 +272,11 @@ exp_stmt:
 exp: 
 	assign_exp {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 	| simple_exp {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 ;
 
@@ -353,6 +356,7 @@ return_stmt:
 	| RETURN exp ';' {
 		$$ = createNode("return_stmt");
 		$$->token = allocateToken($1.lexeme, $1.line, $1.column);
+		$$->type = $2->type;
 		$$->leaf1 = $2;
 
 	}
@@ -397,9 +401,11 @@ read_stmt:
 simple_exp:
 	bin_exp {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 	| list_exp {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 ;
 
@@ -536,6 +542,7 @@ mul_exp:
 factor:
 	immutable {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 	| ID {
 		$$ = createNode("ID");

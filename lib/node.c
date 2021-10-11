@@ -147,7 +147,7 @@ extern void checkIfIsFunctionUnary(Node *node, int linha, int coluna, int *scope
 extern void checkTypeOfReturn(Node *node)
 {
 
-    // printTree(node, 0);
+    
 }
 
 int getChildType(Node *node){

@@ -2,7 +2,7 @@ int list IL;
 float list FL;
 
 int list read_list(int n) {
-	int i;
+	int i;  
 	i =  -435.7;
 	int list new;
 	new = NIL;
@@ -62,6 +62,6 @@ int main() {
 
          } else writeln("A nova lista não possui elementos."); 
 
-  return 0; 
+  return 0 + 1; 
 
 }

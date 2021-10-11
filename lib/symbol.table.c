@@ -276,6 +276,9 @@ extern char* convertIntToType(int tipo){
         case 5:
 			strcpy(tipoString, "floatToInt");
 			break;
+        case 6:
+			strcpy(tipoString, "list");
+			break;
 		default:
 			strcpy(tipoString, "undefined");
 			break;
