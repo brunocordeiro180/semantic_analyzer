@@ -34,5 +34,6 @@ extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int
 extern int searchTypeInSymbolTable(char *lexeme, int *scopeStack);
 extern int checkIfIsFunctionUnaryInSymbolTable(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
 extern char* convertIntToType(int tipo);
+extern int convertTypeToInt(char *tipoString);
 
 #endif

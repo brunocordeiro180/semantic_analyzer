@@ -22,7 +22,7 @@ extern void printTree(Node* node, int depth);
 extern void freeTree(Node *tree);
 extern int checkTypeListExp(Node *node, int *scopeStack);
 extern void checkIfIsFunctionUnary(Node *node, int linha, int coluna, int *scopeStack, int *errosSemanticos);
-extern void checkTypeOfReturn(Node *node);
+extern void checkTypeOfReturn(Node *node, char *typeOfFunction,  int *errosSemanticos);
 extern int getExpressionType(Node* left, Node *right, Token token, int *errosSemanticos);
 extern int getAssignType(int typeOfLeftSide, int typeOfRightSide);
 

@@ -253,36 +253,63 @@ extern int checkIfIsFunctionUnaryInSymbolTable(char *lexeme, int linha, int colu
     return 1;
 }
 
-extern char* convertIntToType(int tipo){
-    char * tipoString;
-    tipoString = malloc(sizeof(char)*30);
+extern char *convertIntToType(int tipo)
+{
+    char *tipoString;
+    tipoString = malloc(sizeof(char) * 30);
 
-	switch(tipo){
-		case 0:
-			strcpy(tipoString, "int");
-			break;
-		case 1:
-			strcpy(tipoString, "float");
-			break;
-		case 2:
-			strcpy(tipoString, "int list");
-			break;
-		case 3:
-			strcpy(tipoString, "float list");
-			break;
-        case 4:
-			strcpy(tipoString, "intToFloat");
-			break;
-        case 5:
-			strcpy(tipoString, "floatToInt");
-			break;
-        case 6:
-			strcpy(tipoString, "list");
-			break;
-		default:
-			strcpy(tipoString, "undefined");
-			break;
-	}
+    switch (tipo)
+    {
+    case 0:
+        strcpy(tipoString, "int");
+        break;
+    case 1:
+        strcpy(tipoString, "float");
+        break;
+    case 2:
+        strcpy(tipoString, "int list");
+        break;
+    case 3:
+        strcpy(tipoString, "float list");
+        break;
+    case 4:
+        strcpy(tipoString, "intToFloat");
+        break;
+    case 5:
+        strcpy(tipoString, "floatToInt");
+        break;
+    case 6:
+        strcpy(tipoString, "list");
+        break;
+    default:
+        strcpy(tipoString, "undefined");
+        break;
+    }
 
     return tipoString;
+}
+
+extern int convertTypeToInt(char *tipoString){
+
+    if (strcmp(tipoString, "int") == 0)
+    {
+        return 0;
+    }
+
+    if (strcmp(tipoString, "float") == 0)
+    {
+        return 1;
+    }
+
+    if (strcmp(tipoString, "int list") == 0)
+    {
+        return 2;
+    }
+
+    if (strcmp(tipoString, "float list") == 0)
+    {
+        return 3;
+    }
+
+    return -1;
 }

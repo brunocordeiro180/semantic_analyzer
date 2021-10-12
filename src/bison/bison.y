@@ -156,7 +156,8 @@ fun_decl:
 		$$->leaf3 = $4;
 		$$->leaf4 = $7;
 
-		checkTypeOfReturn($$);
+		checkTypeOfReturn($7, $1.lexeme, &errosSemanticos);
+	
 		// printf("\n\n\n\n");
 	}
 	| TYPE ID '(' ')'{
@@ -671,6 +672,8 @@ int main(int argc, char **argv){
 		printSymbolTable(symbolTable);
 		freeTree(tree);
 	}
+	printf(BHRED"\nNUMBER OF SYNTATIC ERROS: %d\n"RESET, errors);
+	printf(BHRED"\nNUMBER OF SEMANTIC ERROS: %d\n\n"RESET, errosSemanticos);
 	// printSymbolTable(symbolTable);
 	freeTable();
     yylex_destroy();
