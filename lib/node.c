@@ -50,8 +50,9 @@ extern void printTree(Node *node, int depth)
         {
             printf(BHMAG "-" RESET);
         }
-
-        if(strcmp(node->name, "\0") != 0){
+        
+        //esse strcmp(node->name, "arg") != 0 eh so pra arvore ficar menos poluida
+        if(strcmp(node->name, "\0") != 0 && strcmp(node->name, "arg") != 0){
             printf(" %s", node->name);
         }
 
@@ -342,27 +343,45 @@ extern void storeParamsTypes(Symbol *symbol, Node *node, int *index){
     storeParamsTypes(symbol, node->leaf5, index);
 }
 
-void verifyArgsTypes(Node *node, Symbol *symbol, int *errosSemanticos, int *index){
+void verifyArgsTypes(Node *arg, Symbol *symbol, int *errosSemanticos, int *index){
     
   
-    if(node == NULL){
+    if(arg == NULL){
         return;
     }
 
-    if(node->type == -1){
-        verifyArgsTypes(node->leaf1, symbol, errosSemanticos, index);
-        verifyArgsTypes(node->leaf2, symbol, errosSemanticos, index);
+    if(strcmp(arg->name, "arg") == 0){
+       
+        // printf(BHRED "SEMANTIC ERROR -> INDEX %d LEXEME %s. Function parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, *index, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(arg->type));
+
+        if(arg->type == 2 && symbol->typeParameters[*index] != 2 && symbol->typeParameters[*index] != 6
+            || arg->type == 3 && symbol->typeParameters[*index] != 3 && symbol->typeParameters[*index] != 6
+        ){
+            // printf(BHRED "SEMANTIC ERROR -> INDEX %d LEXEME %s. Function parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, *index, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(arg->type));
+            printf(BHRED "SEMANTIC ERROR -> In function \'%s\' parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(arg->type));
+            *errosSemanticos = *errosSemanticos + 1;
+        }
+
+        if(arg->type != 2 && arg->type != 3 && arg->type != 6 && (symbol->typeParameters[*index] == 2 || symbol->typeParameters[*index] == 3 || symbol->typeParameters[*index] == 6)
+        ){
+            // printf(BHRED "SEMANTIC ERROR -> INDEX %d LEXEME %s. Function parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, *index, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(arg->type));
+            printf(BHRED "SEMANTIC ERROR -> In function \'%s\' parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(arg->type));
+            *errosSemanticos = *errosSemanticos + 1;
+        }
+
+        if(symbol->typeParameters[*index] == 1 && arg->type == 0){
+            arg->leaf1->type = 4;
+        }
+
+        if(symbol->typeParameters[*index] == 0 && arg->type == 1){
+            arg->leaf1->type = 5;
+        }
+
+        *index = *index + 1;
     }
 
-    if(node->type == 2 && symbol->typeParameters[*index] != 2 && symbol->typeParameters[*index] != 6
-        || node->type == 3 && symbol->typeParameters[*index] != 3 && symbol->typeParameters[*index] != 6
-    ){
-        
-        printf(BHRED "SEMANTIC ERROR -> INDEX %d LEXEME %s. Function parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, *index, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(node->type));
-        *errosSemanticos = *errosSemanticos + 1;
-    }
-
-    *index = *index + 1;
+    verifyArgsTypes(arg->leaf1, symbol, errosSemanticos, index);
+    verifyArgsTypes(arg->leaf2, symbol, errosSemanticos, index);
 }
 
 extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs, Node *node)
@@ -370,10 +389,10 @@ extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int
    
     Symbol *symbol = getSymbolFromTable(lexeme, scopeStack);
 
-    printf("\n\n\n");
-    printf("Verify arg types for %s", symbol->lexeme);
-    printTree(node, 1);
-    printf("\n\n\n");
+    // printf("\n\n\n");
+    // printf("Verify arg types for %s", symbol->lexeme);
+    // printTree(node, 1);
+    // printf("\n\n\n");
     // printf("SYMBOL FOUND %s\n", symbol->lexeme);
           
 
@@ -399,6 +418,6 @@ extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int
 
     if(numberOfArgs != 0){
         int index = 0;
-        // verifyArgsTypes(node, symbol, errosSemanticos, &index);
+        verifyArgsTypes(node, symbol, errosSemanticos, &index);
     }
 }

@@ -1,7 +1,7 @@
 int list IL;
 float list FL;
 
-int macaco(float x, int y, int list z){
+int macaco(float x, int y, int list i){
     return x + y;
 }
 
@@ -44,7 +44,7 @@ int main() {
     float list FL10;
    
     int w;
-    w = macaco(2.2,2,FL10);
+    w = macaco(2, 2.3, NIL);
 
 
       /* Suponha que n = 10  */

@@ -78,6 +78,7 @@ int verifyIfIsList(int tipo, char *operator, int line, int column, int typeError
 %type <node> immutable
 %type <node> call
 %type <node> args
+%type <node> arg
 %type <node> constant 
 
 
@@ -625,17 +626,26 @@ call:
 ;
 
 args: 
-	args ',' simple_exp {
+	args ',' arg {
 		$$ = createNode("args");
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
 		numberOfArguments = numberOfArguments + 1;
 	}
-	| simple_exp {
+	| arg {
 		$$ = $1;
 		$$->type = $1->type;
 		numberOfArguments = numberOfArguments + 1;
 	}
+;
+
+arg:
+	simple_exp {
+		$$ = createNode("arg");
+		$$->leaf1 = $1;
+		$$->type = $1->type;
+	}
+
 ;
 
 constant:
