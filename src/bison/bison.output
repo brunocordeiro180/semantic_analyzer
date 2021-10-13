@@ -69,14 +69,14 @@ Gramática
    44 read_stmt: READ '(' ID ')' ';'
 
    45 simple_exp: bin_exp
-   46           | list_exp
+   46           | bin_list_exp
 
    47 unary_list_exp: '?' factor
    48               | '%' factor
 
-   49 list_exp: factor ':' factor
-   50         | factor MAP factor
-   51         | factor FILTER factor
+   49 bin_list_exp: factor ':' factor
+   50             | factor MAP factor
+   51             | factor FILTER factor
 
    52 bin_exp: bin_exp LOG_OP unary_log_exp
    53        | unary_log_exp
@@ -224,7 +224,7 @@ Não terminais com as regras onde eles aparecem
     unary_list_exp <node> (57)
         à esquerda: 47 48
         à direita: 62
-    list_exp <node> (58)
+    bin_list_exp <node> (58)
         à esquerda: 49 50 51
         à direita: 46
     bin_exp <node> (59)
@@ -503,7 +503,7 @@ Estado 22
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -644,7 +644,7 @@ Estado 32
     assign_exp      ir ao estado 49
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -822,7 +822,7 @@ Estado 43
 
     simple_exp      ir ao estado 88
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -1025,7 +1025,7 @@ Estado 51
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -1192,7 +1192,7 @@ Estado 58
 
 Estado 59
 
-   46 simple_exp: list_exp •
+   46 simple_exp: bin_list_exp •
 
     ';'  reduzir usando a regra 46 (simple_exp)
 
@@ -1253,9 +1253,9 @@ Estado 64
 
 Estado 65
 
-   49 list_exp: factor • ':' factor
-   50         | factor • MAP factor
-   51         | factor • FILTER factor
+   49 bin_list_exp: factor • ':' factor
+   50             | factor • MAP factor
+   51             | factor • FILTER factor
    61 mul_exp: factor •
 
     ':'     deslocar, e ir ao estado 97
@@ -1344,7 +1344,7 @@ Estado 71
 
     simple_exp      ir ao estado 100
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -1375,7 +1375,7 @@ Estado 72
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -1406,7 +1406,7 @@ Estado 73
 
     simple_exp      ir ao estado 104
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -1514,7 +1514,7 @@ Estado 79
 
     simple_exp      ir ao estado 109
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -1543,7 +1543,7 @@ Estado 80
 
     simple_exp      ir ao estado 110
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -1823,7 +1823,7 @@ Estado 96
 
 Estado 97
 
-   49 list_exp: factor ':' • factor
+   49 bin_list_exp: factor ':' • factor
 
     ID      deslocar, e ir ao estado 199
     INT     deslocar, e ir ao estado 200
@@ -1841,7 +1841,7 @@ Estado 97
 
 Estado 98
 
-   50 list_exp: factor MAP • factor
+   50 bin_list_exp: factor MAP • factor
 
     ID      deslocar, e ir ao estado 199
     INT     deslocar, e ir ao estado 200
@@ -1859,7 +1859,7 @@ Estado 98
 
 Estado 99
 
-   51 list_exp: factor FILTER • factor
+   51 bin_list_exp: factor FILTER • factor
 
     ID      deslocar, e ir ao estado 199
     INT     deslocar, e ir ao estado 200
@@ -2052,23 +2052,23 @@ Estado 116
 
 Estado 117
 
-   49 list_exp: factor ':' factor •
+   49 bin_list_exp: factor ':' factor •
 
-    ';'  reduzir usando a regra 49 (list_exp)
+    ';'  reduzir usando a regra 49 (bin_list_exp)
 
 
 Estado 118
 
-   50 list_exp: factor MAP factor •
+   50 bin_list_exp: factor MAP factor •
 
-    ';'  reduzir usando a regra 50 (list_exp)
+    ';'  reduzir usando a regra 50 (bin_list_exp)
 
 
 Estado 119
 
-   51 list_exp: factor FILTER factor •
+   51 bin_list_exp: factor FILTER factor •
 
-    ';'  reduzir usando a regra 51 (list_exp)
+    ';'  reduzir usando a regra 51 (bin_list_exp)
 
 
 Estado 120
@@ -2088,7 +2088,7 @@ Estado 120
 
     simple_exp      ir ao estado 128
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -2153,7 +2153,7 @@ Estado 122
     read_stmt       ir ao estado 227
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2182,7 +2182,7 @@ Estado 123
 
     simple_exp      ir ao estado 130
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2211,7 +2211,7 @@ Estado 124
 
     simple_exp      ir ao estado 131
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2415,7 +2415,7 @@ Estado 135
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2524,7 +2524,7 @@ Estado 141
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2574,7 +2574,7 @@ Estado 142
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2679,7 +2679,7 @@ Estado 145
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -2785,7 +2785,7 @@ Estado 152
 
     simple_exp      ir ao estado 232
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -3001,7 +3001,7 @@ Estado 165
 
     simple_exp      ir ao estado 249
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -3026,7 +3026,7 @@ Estado 166
 
 Estado 167
 
-   46 simple_exp: list_exp •
+   46 simple_exp: bin_list_exp •
 
     ')'  reduzir usando a regra 46 (simple_exp)
 
@@ -3087,9 +3087,9 @@ Estado 172
 
 Estado 173
 
-   49 list_exp: factor • ':' factor
-   50         | factor • MAP factor
-   51         | factor • FILTER factor
+   49 bin_list_exp: factor • ':' factor
+   50             | factor • MAP factor
+   51             | factor • FILTER factor
    61 mul_exp: factor •
 
     ':'     deslocar, e ir ao estado 254
@@ -3321,7 +3321,7 @@ Estado 186
 
     simple_exp      ir ao estado 273
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -3347,7 +3347,7 @@ Estado 187
 
 Estado 188
 
-   46 simple_exp: list_exp •
+   46 simple_exp: bin_list_exp •
 
     ','  reduzir usando a regra 46 (simple_exp)
     ')'  reduzir usando a regra 46 (simple_exp)
@@ -3414,9 +3414,9 @@ Estado 193
 
 Estado 194
 
-   49 list_exp: factor • ':' factor
-   50         | factor • MAP factor
-   51         | factor • FILTER factor
+   49 bin_list_exp: factor • ':' factor
+   50             | factor • MAP factor
+   51             | factor • FILTER factor
    61 mul_exp: factor •
 
     ':'     deslocar, e ir ao estado 278
@@ -3577,7 +3577,7 @@ Estado 205
 
     simple_exp      ir ao estado 283
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -3649,7 +3649,7 @@ Estado 211
     assign_exp      ir ao estado 49
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -3756,7 +3756,7 @@ Estado 217
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -4078,7 +4078,7 @@ Estado 229
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -4109,7 +4109,7 @@ Estado 230
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -4159,7 +4159,7 @@ Estado 233
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -4280,7 +4280,7 @@ Estado 241
 
     simple_exp      ir ao estado 305
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -4464,7 +4464,7 @@ Estado 253
 
 Estado 254
 
-   49 list_exp: factor ':' • factor
+   49 bin_list_exp: factor ':' • factor
 
     ID      deslocar, e ir ao estado 311
     INT     deslocar, e ir ao estado 312
@@ -4482,7 +4482,7 @@ Estado 254
 
 Estado 255
 
-   50 list_exp: factor MAP • factor
+   50 bin_list_exp: factor MAP • factor
 
     ID      deslocar, e ir ao estado 311
     INT     deslocar, e ir ao estado 312
@@ -4500,7 +4500,7 @@ Estado 255
 
 Estado 256
 
-   51 list_exp: factor FILTER • factor
+   51 bin_list_exp: factor FILTER • factor
 
     ID      deslocar, e ir ao estado 311
     INT     deslocar, e ir ao estado 312
@@ -4535,7 +4535,7 @@ Estado 257
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -4662,7 +4662,7 @@ Estado 265
 
     simple_exp      ir ao estado 328
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -4853,7 +4853,7 @@ Estado 277
 
 Estado 278
 
-   49 list_exp: factor ':' • factor
+   49 bin_list_exp: factor ':' • factor
 
     ID      deslocar, e ir ao estado 334
     INT     deslocar, e ir ao estado 335
@@ -4871,7 +4871,7 @@ Estado 278
 
 Estado 279
 
-   50 list_exp: factor MAP • factor
+   50 bin_list_exp: factor MAP • factor
 
     ID      deslocar, e ir ao estado 334
     INT     deslocar, e ir ao estado 335
@@ -4889,7 +4889,7 @@ Estado 279
 
 Estado 280
 
-   51 list_exp: factor FILTER • factor
+   51 bin_list_exp: factor FILTER • factor
 
     ID      deslocar, e ir ao estado 334
     INT     deslocar, e ir ao estado 335
@@ -4924,7 +4924,7 @@ Estado 281
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -4969,7 +4969,7 @@ Estado 284
 
     simple_exp      ir ao estado 350
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5079,7 +5079,7 @@ Estado 290
 
     simple_exp      ir ao estado 355
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5108,7 +5108,7 @@ Estado 291
 
     simple_exp      ir ao estado 356
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5169,7 +5169,7 @@ Estado 293
     read_stmt       ir ao estado 56
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -5233,7 +5233,7 @@ Estado 296
 
     simple_exp      ir ao estado 359
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5345,7 +5345,7 @@ Estado 303
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -5508,7 +5508,7 @@ Estado 317
 
     simple_exp      ir ao estado 367
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5522,9 +5522,9 @@ Estado 317
 
 Estado 318
 
-   49 list_exp: factor ':' factor •
+   49 bin_list_exp: factor ':' factor •
 
-    ')'  reduzir usando a regra 49 (list_exp)
+    ')'  reduzir usando a regra 49 (bin_list_exp)
 
 
 Estado 319
@@ -5550,16 +5550,16 @@ Estado 321
 
 Estado 322
 
-   50 list_exp: factor MAP factor •
+   50 bin_list_exp: factor MAP factor •
 
-    ')'  reduzir usando a regra 50 (list_exp)
+    ')'  reduzir usando a regra 50 (bin_list_exp)
 
 
 Estado 323
 
-   51 list_exp: factor FILTER factor •
+   51 bin_list_exp: factor FILTER factor •
 
-    ')'  reduzir usando a regra 51 (list_exp)
+    ')'  reduzir usando a regra 51 (bin_list_exp)
 
 
 Estado 324
@@ -5605,7 +5605,7 @@ Estado 326
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -5779,7 +5779,7 @@ Estado 340
 
     simple_exp      ir ao estado 374
     unary_list_exp  ir ao estado 166
-    list_exp        ir ao estado 167
+    bin_list_exp    ir ao estado 167
     bin_exp         ir ao estado 168
     unary_log_exp   ir ao estado 169
     rel_exp         ir ao estado 170
@@ -5793,10 +5793,10 @@ Estado 340
 
 Estado 341
 
-   49 list_exp: factor ':' factor •
+   49 bin_list_exp: factor ':' factor •
 
-    ','  reduzir usando a regra 49 (list_exp)
-    ')'  reduzir usando a regra 49 (list_exp)
+    ','  reduzir usando a regra 49 (bin_list_exp)
+    ')'  reduzir usando a regra 49 (bin_list_exp)
 
 
 Estado 342
@@ -5825,18 +5825,18 @@ Estado 344
 
 Estado 345
 
-   50 list_exp: factor MAP factor •
+   50 bin_list_exp: factor MAP factor •
 
-    ','  reduzir usando a regra 50 (list_exp)
-    ')'  reduzir usando a regra 50 (list_exp)
+    ','  reduzir usando a regra 50 (bin_list_exp)
+    ')'  reduzir usando a regra 50 (bin_list_exp)
 
 
 Estado 346
 
-   51 list_exp: factor FILTER factor •
+   51 bin_list_exp: factor FILTER factor •
 
-    ','  reduzir usando a regra 51 (list_exp)
-    ')'  reduzir usando a regra 51 (list_exp)
+    ','  reduzir usando a regra 51 (bin_list_exp)
+    ')'  reduzir usando a regra 51 (bin_list_exp)
 
 
 Estado 347
@@ -6071,7 +6071,7 @@ Estado 365
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -6165,7 +6165,7 @@ Estado 372
 
     simple_exp      ir ao estado 102
     unary_list_exp  ir ao estado 187
-    list_exp        ir ao estado 188
+    bin_list_exp    ir ao estado 188
     bin_exp         ir ao estado 189
     unary_log_exp   ir ao estado 190
     rel_exp         ir ao estado 191
@@ -6239,7 +6239,7 @@ Estado 376
     read_stmt       ir ao estado 227
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -6268,7 +6268,7 @@ Estado 377
 
     simple_exp      ir ao estado 391
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -6297,7 +6297,7 @@ Estado 378
 
     simple_exp      ir ao estado 392
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -6582,7 +6582,7 @@ Estado 398
     read_stmt       ir ao estado 227
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -6692,7 +6692,7 @@ Estado 404
     read_stmt       ir ao estado 227
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62
@@ -6742,7 +6742,7 @@ Estado 405
     read_stmt       ir ao estado 227
     simple_exp      ir ao estado 57
     unary_list_exp  ir ao estado 58
-    list_exp        ir ao estado 59
+    bin_list_exp    ir ao estado 59
     bin_exp         ir ao estado 60
     unary_log_exp   ir ao estado 61
     rel_exp         ir ao estado 62

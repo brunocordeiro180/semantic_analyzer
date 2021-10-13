@@ -61,10 +61,12 @@
 // }
 
 int main() {
-int i;
+int list x;
+float list y;
 int b;
 
-i = 52 + 12.2 / 14.2 * 3;
+x = NIL;
+return 0;
 }
 
 

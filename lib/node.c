@@ -189,21 +189,6 @@ int getChildType(Node *node){
     }
 
     if(node->type != -1){
-        // printf("THIS IS TYPE %d\n", node->type);
-        // if(node->token){
-        //     if(strcmp(node->token->lexeme, "+") == 0 || strcmp(node->token->lexeme, "-") == 0 
-        //     || strcmp(node->token->lexeme, "*") == 0 || strcmp(node->token->lexeme, "/") == 0
-        //     || strcmp(node->token->lexeme, "<") == 0 || strcmp(node->token->lexeme, "<=") == 0
-        //     || strcmp(node->token->lexeme, ">") == 0 || strcmp(node->token->lexeme, ">=") == 0
-        //     || strcmp(node->token->lexeme, "&&") == 0 || strcmp(node->token->lexeme, "||") == 0
-        //     || strcmp(node->token->lexeme, "==") == 0 || strcmp(node->token->lexeme, "!=") == 0
-        //     || strcmp(node->token->lexeme, "!") == 0 || strcmp(node->token->lexeme, "?") == 0
-        //     || strcmp(node->token->lexeme, ">>") == 0 || strcmp(node->token->lexeme, "<<") == 0
-        //     ){
-        //         *isOperator = 1;
-        //     }
-        // }
-
         if(node->type == 4){
             return 1;
         }else if (node->type == 5){
@@ -259,13 +244,58 @@ extern int getExpressionType(Node* left, Node *right, Token token, int *errosSem
 
         return 1;
     }
+
+    if((leftType == 2 && rightType == 6) || (leftType == 6 && rightType == 2)){
+        
+        if(rightType == 6){
+            right->type = 2;
+        }else{
+            left->type = 2;
+        }
+
+        return 2;
+    }
+
+    if((leftType == 3 && rightType == 6) || (leftType == 6 && rightType == 3)){
+        if(rightType == 6){
+            right->type = 3;
+        }else{
+            left->type = 3;
+        }
+        return 3;
+    }
 }
 
-extern int getAssignType(int typeOfLeftSide, int typeOfRightSide){
+extern int getAssignType(int typeOfLeftSide, int typeOfRightSide,  int *errosSemanticos, int line, int column){
 
     if(typeOfLeftSide == typeOfRightSide){
-        // printf("RETURNING %d\n\n", typeOfRightSide);
         return typeOfRightSide;
+    }
+
+    if(typeOfLeftSide == 2 || typeOfLeftSide == 3){
+
+
+        if(typeOfRightSide == 6){
+            return typeOfLeftSide;
+        }
+
+        if(typeOfLeftSide == 2 || typeOfRightSide == 3){
+            *errosSemanticos = *errosSemanticos + 1;
+            printf(BHRED "SEMANTIC ERROR -> Attempt to assign \'%s\' to a variable of type \'%s\'. Line %d Column %d\n" RESET, convertIntToType(typeOfRightSide), convertIntToType(typeOfLeftSide), line, column);
+            return -1;
+        }
+
+        if(typeOfLeftSide == 3 || typeOfRightSide == 2){
+            *errosSemanticos = *errosSemanticos + 1;
+            printf(BHRED "SEMANTIC ERROR -> Attempt to assign \'%s\' to a variable of type \'%s\'. Line %d Column %d\n" RESET, convertIntToType(typeOfRightSide), convertIntToType(typeOfLeftSide), line, column);
+            return -1;
+        }
+
+        if(typeOfRightSide == 0 || typeOfRightSide == 1 || typeOfRightSide == 4 || typeOfRightSide == 5){
+            *errosSemanticos = *errosSemanticos + 1;
+            printf(BHRED "SEMANTIC ERROR -> Attempt to assign \'%s\' to a variable of type \'%s\'. Line %d Column %d\n" RESET, convertIntToType(typeOfRightSide), convertIntToType(typeOfLeftSide), line, column);
+            return -1;
+        }
     }
 
     if(typeOfLeftSide == 0 && typeOfRightSide == 1){
@@ -277,4 +307,98 @@ extern int getAssignType(int typeOfLeftSide, int typeOfRightSide){
     }
 
     return -1;
+}
+
+extern int resolveConversionOfList(Node *left, Node *right){
+    if((left->type == 1 || left->type == 4) && right->type == 2){
+        return 3;
+    }
+
+    if((left->type == 0 || left->type == 5) && right->type == 3){
+        return 2;
+    }
+
+    return right->type;
+}
+
+extern void storeParamsTypes(Symbol *symbol, Node *node, int *index){
+    // printf("\n\n");
+    // printTree(node, 1);
+    // printf("\n\n");
+
+    if(node == NULL){
+        return;
+    }
+
+    if(strcmp(node->name, "param_decl") == 0){
+        symbol->typeParameters[*index] = convertTypeToInt(node->leaf1->token->lexeme);
+        *index = *index + 1;
+    }
+
+    storeParamsTypes(symbol, node->leaf1, index);
+    storeParamsTypes(symbol, node->leaf2, index);
+    storeParamsTypes(symbol, node->leaf3, index);
+    storeParamsTypes(symbol, node->leaf4, index);
+    storeParamsTypes(symbol, node->leaf5, index);
+}
+
+void verifyArgsTypes(Node *node, Symbol *symbol, int *errosSemanticos, int *index){
+    
+  
+    if(node == NULL){
+        return;
+    }
+
+    if(node->type == -1){
+        verifyArgsTypes(node->leaf1, symbol, errosSemanticos, index);
+        verifyArgsTypes(node->leaf2, symbol, errosSemanticos, index);
+    }
+
+    if(node->type == 2 && symbol->typeParameters[*index] != 2 && symbol->typeParameters[*index] != 6
+        || node->type == 3 && symbol->typeParameters[*index] != 3 && symbol->typeParameters[*index] != 6
+    ){
+        
+        printf(BHRED "SEMANTIC ERROR -> INDEX %d LEXEME %s. Function parameter expects type \'%s\', but passed type is \'%s\'\n" RESET, *index, symbol->lexeme, convertIntToType(symbol->typeParameters[*index]), convertIntToType(node->type));
+        *errosSemanticos = *errosSemanticos + 1;
+    }
+
+    *index = *index + 1;
+}
+
+extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs, Node *node)
+{
+   
+    Symbol *symbol = getSymbolFromTable(lexeme, scopeStack);
+
+    printf("\n\n\n");
+    printf("Verify arg types for %s", symbol->lexeme);
+    printTree(node, 1);
+    printf("\n\n\n");
+    // printf("SYMBOL FOUND %s\n", symbol->lexeme);
+          
+
+    // for(int i = 0; i < 150; i++){
+    //     if(symbol->typeParameters[i] != -999999){
+    //         printf("\n\n%s: TYPE: %d\n\n", symbol->lexeme, symbol->typeParameters[i]);
+    //     }
+    // }
+
+    if (symbol->numberOfParams < numberOfArgs)
+    {
+        printf(BHRED "SEMANTIC ERROR -> Too many arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
+        *errosSemanticos = *errosSemanticos + 1;
+        return;
+    }
+
+    if (symbol->numberOfParams > numberOfArgs)
+    {
+        printf(BHRED "SEMANTIC ERROR -> Too few arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
+        *errosSemanticos = *errosSemanticos + 1;
+        return;
+    }
+
+    if(numberOfArgs != 0){
+        int index = 0;
+        // verifyArgsTypes(node, symbol, errosSemanticos, &index);
+    }
 }

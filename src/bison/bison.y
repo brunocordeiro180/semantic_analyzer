@@ -20,12 +20,11 @@ extern int linhas;
 extern int colunas;
 int errors = 0;
 int errosSemanticos;
-int numberOfParams = 0;
 int numberOfArguments = 0;
 
 // functions
 
-void verifyIfIsList(int tipo, char *operator, int line, int column, int typeError);
+int verifyIfIsList(int tipo, char *operator, int line, int column, int typeError);
 
 // end functions
 
@@ -68,7 +67,7 @@ void verifyIfIsList(int tipo, char *operator, int line, int column, int typeErro
 %type <node> writeln_stmt
 %type <node> read_stmt
 %type <node> simple_exp
-%type <node> list_exp
+%type <node> bin_list_exp
 %type <node> unary_list_exp
 %type <node> bin_exp
 %type <node> unary_log_exp
@@ -141,8 +140,10 @@ fun_decl:
 
 		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);		
 		Symbol* createdSymbol = insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun",$2.scope);
-		createdSymbol->numberOfParams = numberOfParams + 1;
-		numberOfParams = 0;
+		
+		int numberOfParams = 0;
+		storeParamsTypes(createdSymbol, $4, &numberOfParams);
+		createdSymbol->numberOfParams = numberOfParams;
 
 	} block_stmt {
 		$$ = createNode("fun_decl");
@@ -164,7 +165,7 @@ fun_decl:
 
 		checkRedeclaration($2.lexeme, $2.scope, &errosSemanticos, $2.line, $2.column);
 		Symbol* createdSymbol = insertSymbol($2.lexeme, $2.line, $2.column, $1.lexeme, "fun", $2.scope);
-		numberOfParams = 0;
+		int numberOfParams = 0;
 		createdSymbol->numberOfParams = numberOfParams;
 
 	} block_stmt {
@@ -188,7 +189,6 @@ params:
 		$$ = createNode("\0");
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
-		numberOfParams = numberOfParams + 1;
 	}
 	| param_decl {
 		$$ = $1;
@@ -291,12 +291,17 @@ assign_exp:
 		int typeOfRightSide = $3->type;
 
 
-		$$->type = getAssignType(typeOfLeftSide, typeOfRightSide);
+		$$->type = getAssignType(typeOfLeftSide, typeOfRightSide,  &errosSemanticos, $$->token->line, $$->token->column);
 
 		$$->leaf1 = createNode("ID");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
+		$$->leaf1->type = typeOfLeftSide;
 
 		$$->leaf2 = $3;
+
+		if(typeOfRightSide == 6){
+			$3->type = typeOfLeftSide;
+		}
 
 		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
 	}
@@ -404,7 +409,7 @@ simple_exp:
 		$$ = $1;
 		$$->type = $1->type;
 	}
-	| list_exp {
+	| bin_list_exp {
 		$$ = $1;
 		$$->type = $1->type;
 	}
@@ -412,7 +417,7 @@ simple_exp:
 
 unary_list_exp:
 	'?' factor {
-		$$ = createNode("list_exp"); 
+		$$ = createNode("unary_list_exp"); 
 
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
@@ -420,50 +425,67 @@ unary_list_exp:
 
 		int tipo = checkTypeListExp($2, scopeStack);
 		verifyIfIsList(tipo, "?", $1.line, $1.column, 0);
+		$$->type = tipo;
 	}
 	| '%' factor {
-		$$ = createNode("list_exp"); 
+		$$ = createNode("unary_list_exp"); 
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $2;
 
 		int tipo = checkTypeListExp($2, scopeStack);
 		verifyIfIsList(tipo, "%", $1.line, $1.column, 0);
+		$$->type = tipo;
 	}
 ;
 
-list_exp:
+bin_list_exp:
 	factor ':' factor {
-		$$ = createNode("list_exp");
+		$$ = createNode("bin_list_exp");
+		$$->token = allocateToken($2.lexeme, $2.line, $2.column);
 
-		$$->leaf1 = $1;
-		$$->leaf2 = createNode("\0");
-		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
+		$$->leaf1 = $1;		
 		$$->leaf3 = $3;
+
+		int tipo = checkTypeListExp($3, scopeStack);
+		int isList = verifyIfIsList(tipo, $2.lexeme, $2.line, $2.column, 1);
+
+		if(isList == 1){
+			$$->type = tipo;
+		}else{
+			$$->type = -1;
+		}
+
 	}
 	| factor MAP factor {
-		$$ = createNode("list_exp");
-		$$->leaf1 = $1;
-		$$->leaf2 = createNode("\0");
-		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
+		$$ = createNode("bin_list_exp");
+		$$->token = allocateToken($2.lexeme, $2.line, $2.column);
+
+		$$->leaf1 = $1;		
 		$$->leaf3 = $3;
 
 		checkIfIsFunctionUnary($1, $2.line, $2.column, scopeStack, &errosSemanticos);
 
 		int tipo = checkTypeListExp($3, scopeStack);
 		verifyIfIsList(tipo, $2.lexeme, $2.line, $2.column, 1);
+		int tipoConversion  = resolveConversionOfList($1, $3); //para casos quando a funcao unitaria retorna um tipo diferente dos elementos dentro da lista
+		
+		$$->type = tipoConversion;
 	}
 	| factor FILTER factor {
-		$$ = createNode("list_exp");
-		$$->leaf1 = $1;
-		$$->leaf2 = createNode("\0");
-		$$->leaf2->token = allocateToken($2.lexeme, $2.line, $2.column);
+		$$ = createNode("bin_list_exp");
+		$$->token = allocateToken($2.lexeme, $2.line, $2.column);
+
+		$$->leaf1 = $1;		
 		$$->leaf3 = $3;
 
 		checkIfIsFunctionUnary($1, $2.line, $2.column, scopeStack, &errosSemanticos);
 
 		int tipo = checkTypeListExp($3, scopeStack);
 		verifyIfIsList(tipo, $2.lexeme, $2.line, $2.column, 1);
+		// int tipoConversion  = resolveConversionOfList($1, $3); //para casos quando a funcao unitaria retorna um tipo diferente dos elementos dentro da lista
+		
+		$$->type = tipo;
 	}
 ;
 
@@ -488,6 +510,8 @@ unary_log_exp:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $2;
+
+		$$->type = $2->type;
 	}
 	| rel_exp {
 		$$ = $1;
@@ -537,6 +561,7 @@ mul_exp:
 	}
 	| unary_list_exp {
 		$$ = $1;
+		$$->type = $1->type;
 	}
 ;
 
@@ -581,7 +606,8 @@ call:
 		$$->leaf2 = $3;
 		
 		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
-		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments);
+		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments, $3);
+		$$->type = searchTypeInSymbolTable($1.lexeme, scopeStack);
 		numberOfArguments = 0;
 
 	}
@@ -592,7 +618,8 @@ call:
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 
 		verifyDefinedId($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos);
-		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments);
+		verifyCall($1.lexeme, $1.line, $1.column, scopeStack, &errosSemanticos, numberOfArguments, NULL);
+		$$->type = searchTypeInSymbolTable($1.lexeme, scopeStack);
 		numberOfArguments = 0;
 	}
 ;
@@ -606,6 +633,7 @@ args:
 	}
 	| simple_exp {
 		$$ = $1;
+		$$->type = $1->type;
 		numberOfArguments = numberOfArguments + 1;
 	}
 ;
@@ -636,22 +664,27 @@ constant:
 %%
 
 // type error: 0 -> operacao unaria de listas 1- > operacao binaria de listas
-void verifyIfIsList(int tipo, char *operator, int line, int column, int typeError){
+int verifyIfIsList(int tipo, char *operator, int line, int column, int typeError){
 
 	char *tipoString = convertIntToType(tipo);
+	int isList = 1;
 
 	if(tipo != 2 && tipo != 3){
 		errosSemanticos = errosSemanticos + 1;
 		
 		if(typeError == 0){
 			printf(BHRED"SEMANTIC ERROR -> Operator \'%s\' cannot be applied to type %s. Line %d Column %d\n"RESET, operator, tipoString, line, column);
+			isList = 0;
 		}
 
 		if(typeError == 1){
 			printf(BHRED"SEMANTIC ERROR -> Second argument of binary infix operator of lists \'%s\' cannot be applied to type %s. Line %d Column %d\n"RESET, operator, tipoString, line, column);
+			isList = 0;
 		}
 
 	}
+
+	return isList;
 }
 
 extern void yyerror(const char* s) {
@@ -664,6 +697,7 @@ extern void yyerror(const char* s) {
 int main(int argc, char **argv){
 	initializeTable(symbolTable);
 	initializeScopeStack(scopeStack);
+	printf("\n");
     yyparse();
 	findMain(&errosSemanticos);
 	if(!errors){

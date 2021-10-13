@@ -2,6 +2,7 @@
 #define SYMBOL_TABLE_H
 
 #include "token.h"
+// #include "node"
 
 typedef struct symbol
 {
@@ -13,6 +14,7 @@ typedef struct symbol
     char lexeme[150];
     char type[20];
     char decl[5];
+    int typeParameters[150];
 } Symbol;
 
 typedef struct symbolList
@@ -30,10 +32,10 @@ extern void freeTableRecursive(SymbolList *list);
 extern void checkRedeclaration(char *lexeme, int scope, int *errosSemanticos, int linha, int coluna);
 extern void findMain(int *errosSemanticos);
 extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
-extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs);
 extern int searchTypeInSymbolTable(char *lexeme, int *scopeStack);
 extern int checkIfIsFunctionUnaryInSymbolTable(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos);
 extern char* convertIntToType(int tipo);
 extern int convertTypeToInt(char *tipoString);
+extern Symbol* getSymbolFromTable(char *lexeme, int *scopeStack);
 
 #endif

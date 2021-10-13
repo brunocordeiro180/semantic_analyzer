@@ -24,6 +24,9 @@ extern int checkTypeListExp(Node *node, int *scopeStack);
 extern void checkIfIsFunctionUnary(Node *node, int linha, int coluna, int *scopeStack, int *errosSemanticos);
 extern void checkTypeOfReturn(Node *node, char *typeOfFunction,  int *errosSemanticos);
 extern int getExpressionType(Node* left, Node *right, Token token, int *errosSemanticos);
-extern int getAssignType(int typeOfLeftSide, int typeOfRightSide);
+extern int getAssignType(int typeOfLeftSide, int typeOfRightSide,  int *errosSemanticos, int line, int column);
+extern int resolveConversionOfList(Node *left, Node *right);
+extern void storeParamsTypes(Symbol *symbol, Node *node, int *index);
+extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs, Node *node);
 
 #endif

@@ -36,6 +36,11 @@ extern Symbol *insertSymbol(char *lexeme, int line, int column, char *type, char
     newSymbol->line = line;
     newSymbol->column = column;
     newSymbol->scope = scope;
+    
+    int i;
+    for(i = 0; i < 150; i++){
+        newSymbol->typeParameters[i] = -999999;
+    }
 
     if (current->symbol == NULL)
     { //verifica se é o primeiro elemento da lista
@@ -181,27 +186,14 @@ extern void verifyDefinedId(char *lexeme, int linha, int coluna, int *scopeStack
     }
 }
 
-extern void verifyCall(char *lexeme, int linha, int coluna, int *scopeStack, int *errosSemanticos, int numberOfArgs)
+extern Symbol* getSymbolFromTable(char *lexeme, int *scopeStack)
 {
     SymbolList *current = head;
     while (current != NULL && current->symbol != NULL)
     {
         if (strcmp(current->symbol->lexeme, lexeme) == 0 && strcmp(current->symbol->decl, "fun") == 0 && isInScope(current->symbol->scope, scopeStack))
         {
-
-            if (current->symbol->numberOfParams < numberOfArgs)
-            {
-                printf(BHRED "SEMANTIC ERROR -> Too many arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
-                *errosSemanticos = *errosSemanticos + 1;
-                return;
-            }
-
-            if (current->symbol->numberOfParams > numberOfArgs)
-            {
-                printf(BHRED "SEMANTIC ERROR -> Too few arguments in \'%s\'. Line %d Column %d\n" RESET, lexeme, linha, coluna);
-                *errosSemanticos = *errosSemanticos + 1;
-                return;
-            }
+            return current->symbol;
         }
 
         current = current->next;
