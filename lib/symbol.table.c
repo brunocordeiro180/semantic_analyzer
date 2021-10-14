@@ -247,38 +247,33 @@ extern int checkIfIsFunctionUnaryInSymbolTable(char *lexeme, int linha, int colu
 
 extern char *convertIntToType(int tipo)
 {
-    char *tipoString;
-    tipoString = malloc(sizeof(char) * 30);
-
     switch (tipo)
     {
     case 0:
-        strcpy(tipoString, "int");
+        return "int";
         break;
     case 1:
-        strcpy(tipoString, "float");
+        return "float";
         break;
     case 2:
-        strcpy(tipoString, "int list");
+        return "int list";
         break;
     case 3:
-        strcpy(tipoString, "float list");
+        return "float list";
         break;
     case 4:
-        strcpy(tipoString, "intToFloat");
+        return "intToFloat";
         break;
     case 5:
-        strcpy(tipoString, "floatToInt");
+        return "floatToInt";
         break;
     case 6:
-        strcpy(tipoString, "list");
+        return "list";
         break;
     default:
-        strcpy(tipoString, "undefined");
+        return "undefined";
         break;
     }
-
-    return tipoString;
 }
 
 extern int convertTypeToInt(char *tipoString){

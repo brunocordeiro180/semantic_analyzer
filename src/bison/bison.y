@@ -11,7 +11,7 @@
 
 extern int yylex();
 extern int yylex_destroy();
-extern void yyerror(const char* s);
+extern int yyerror(const char* s);
 extern int scopeStack[100];
 extern int scopeId;
 SymbolList *symbolTable;
@@ -73,6 +73,7 @@ int verifyIfIsList(int tipo, char *operator, int line, int column, int typeError
 %type <node> unary_log_exp
 %type <node> rel_exp
 %type <node> sum_exp
+%type <node> var_or_statement
 %type <node> mul_exp
 %type <node> factor
 %type <node> immutable
@@ -182,6 +183,7 @@ fun_decl:
 	}
 	| error {
 		yyerrok;
+		$$ = createNode("\0");
 	}
 ;
 
@@ -196,6 +198,7 @@ params:
 	}
 	| error{
 		yyerrok;
+		$$ = createNode("\0");
 	}
 ;
 
@@ -236,9 +239,6 @@ statement:
 	| read_stmt {
 		$$ = $1;
 	}
-	| var_decl {
-		$$ = $1;
-	}
 	| for_stmt {
 		$$ = $1;
 	}
@@ -256,7 +256,8 @@ for_stmt:
 		$$->leaf5 = $9;
 	}
 	| 	FOR '(' error ';' simple_exp ';' assign_exp ')' statement {
-
+		yyerrok;
+		$$ = createNode("\0");
 	}
 	
 ;
@@ -308,6 +309,7 @@ assign_exp:
 	}
 	| ID error {
 		yyerrok;
+		$$ = createNode("\0");
 	}
 ;
 
@@ -318,17 +320,33 @@ block_stmt:
 ;
 
 stmt_list:
-    stmt_list statement {
+    stmt_list var_or_statement {
         $$ = createNode("stmt_list");
 		$$->leaf1 = $1;
 		$$->leaf2 = $2;
     }
     | stmt_list error {
-        // printf("DEU PAU\n");
+        yyerrok;
+		$$ = createNode("\0");
     }
-    | statement {
+    | var_or_statement {
         $$ = $1;
     }
+	| error {
+		yyerrok;
+		$$ = createNode("\0");
+	}
+;
+
+var_or_statement:
+	statement {
+		$$ = $1;
+		$$->type = $1->type;
+	}
+	| var_decl {
+		$$ = $1;
+		$$->type = $1->type;
+	}
 ;
 
 if_stmt:
@@ -368,7 +386,8 @@ return_stmt:
 
 	}
 	| RETURN error {
-
+		yyerrok;
+		$$ = createNode("\0");
 	}
 ;
 
@@ -379,6 +398,10 @@ write_stmt:
 		$$->leaf1 = createNode("\0");
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $3;
+	}
+	| WRITE error {
+		yyerrok;
+		$$ = createNode("\0");
 	}
 ;
 
@@ -704,11 +727,12 @@ int verifyIfIsList(int tipo, char *operator, int line, int column, int typeError
 	return isList;
 }
 
-extern void yyerror(const char* s) {
+int yyerror(const char* s) {
     printf(BHRED"SYNTATIC ERROR -> ");
     printf("%s ", s);
 	printf("[Line %d, Column %d]\n"RESET, linhas, colunas);
 	errors++;
+	return 0;
 }
 
 int main(int argc, char **argv){
@@ -721,11 +745,10 @@ int main(int argc, char **argv){
 		printf("\n\n--------------------------------------------------------------- TREE ---------------------------------------------------------------- \n\n");
 		printTree(tree, 1);
 		printSymbolTable(symbolTable);
-		freeTree(tree);
 	}
 	printf(BHRED"\nNUMBER OF SYNTATIC ERROS: %d\n"RESET, errors);
 	printf(BHRED"\nNUMBER OF SEMANTIC ERROS: %d\n\n"RESET, errosSemanticos);
-	// printSymbolTable(symbolTable);
+	freeTree(tree);
 	freeTable();
     yylex_destroy();
     return 0;

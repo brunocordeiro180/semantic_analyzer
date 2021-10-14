@@ -156,7 +156,7 @@ extern void checkTypeOfReturn(Node *node, char *typeOfFunction,  int *errosSeman
             && (node->type == 2 || node->type == 3)
         ){
             *errosSemanticos = *errosSemanticos + 1;
-            printf(BHRED "SEMANTIC ERROR -> Function expect return of type \'%s\' but return is of type \'list\'. Line %d Column %d\n" RESET, typeOfFunction, node->token->line, node->token->column);
+            printf(BHRED "SEMANTIC ERROR -> Function expect return of type \'%s\' but return is of type \'%s\'. Line %d Column %d\n" RESET, typeOfFunction, convertIntToType(node->type) ,node->token->line, node->token->column);
         }
 
         if((convertTypeToInt(typeOfFunction) == 2 || convertTypeToInt(typeOfFunction) == 3)

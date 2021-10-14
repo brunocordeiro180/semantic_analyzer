@@ -1,16 +1,16 @@
 int list IL;
 float list FL;
 
-int read_list(int n, int y) {
+int read_list(int n,  y) {
 
     int i;
-    i = 14;
     int list new;
     new = NIL;
+    else
     for (i = 0; i < n ; i = i + n) {
         int elem;
         writeln("Digite o elemento da lista: ");
         read(elem);
     }
-    return %new;
+    return 0;
 }

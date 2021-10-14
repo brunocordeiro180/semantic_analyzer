@@ -1,15 +1,56 @@
-int list IL;
-float list FL;
+float list graziane(int x, float list y){
+    float list n;
+    y = x : y; 
+    return n;
+}
 
-float list read_list(int n,  int y) {
+float belo(float duduNobre, int ola){
+    // Dudu Nobre, grande sambista 
+    return (duduNobre + duduNobre * 2 - (duduNobre - 1));
+}
 
-	i =  -435.7;
-	int list new;
-	new = NIL;
-	for (i = 1; i < n ; i = i + 1) {
-		int elem;
-		writeln(elem);
-		read(elem);
-	}
-	return new;
+float filter(float diogoNogueira){
+	int list xau;
+	if(diogoNogueira <= (2 * 20 + 1) && 2 > 1){
+        return 1.0;
+    }else{
+        return xau;
+    }
+}
+
+int main(){
+    float list chorao;
+    int n;
+    chorao = graziane(2.3, chorao);
+    read(n);
+    int i;
+
+    /* 
+        Leia o livro "Comece pelo porque"
+    */
+
+    chorao = 99.1 : chorao;
+    chorao = 103.2 : chorao;
+    chorao = 8 : chorao;
+    chorao = 5 : chorao; 
+
+    for(i = 0; i < n; i = i +1){
+        chorao = belo >> chorao;
+    }
+
+    float list pericles;
+    pericles = filter << chorao;
+    write();
+    write(?chorao);
+
+    write("Ultimo elemento: ");
+    write(!chorao);
+	
+	chorao = ;
+    chorao = %chorao; //nao te quero mais 
+
+    write("Primeiro elemento: ");
+    write(?chorao);
+
+    return 2021;
 }
