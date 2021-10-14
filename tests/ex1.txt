@@ -1,5 +1,7 @@
-int graziane(int x, float list y){
+float list graziane(int x, float list y){
+    float list n;
     y = x : y; 
+    return n;
 }
 
 float belo(float duduNobre){
@@ -8,7 +10,11 @@ float belo(float duduNobre){
 }
 
 float filter(float diogoNogueira){
-    return diogoNogueira <= (2 * 20 + 1);
+    if(diogoNogueira <= (2 * 20 + 1) && 2 > 1){
+        return 1.0;
+    }else{
+        return -10;
+    }
 }
 
 int main(){

@@ -13,6 +13,7 @@
     #define RESET "\e[0m"
 
     int contaNumeroDeBreakLines(char *texto);
+    char *removeSubstring(char *str);
 
     int linhas = 1;
     int colunas = 1;
@@ -62,7 +63,7 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
 } 
 
 {TIPO_DADO}[" \t"]+"list"           { 
-    strcpy(yylval.token.lexeme, yytext);
+    strcpy(yylval.token.lexeme, removeSubstring(yytext));
     yylval.token.line = linhas;
     yylval.token.column = colunas;
     colunas+=yyleng;
@@ -286,6 +287,15 @@ ID_NAO_PERMITIDO            [0-9]+{IDENTIFICADOR}|[0-9]+{TIPO_DADO}|[0-9]+{PALAV
 }
 
 %%
+
+char *removeSubstring(char *str) {
+    
+    if(strstr(str, "int") != NULL) {
+        return "int list";
+    }else{
+        return "float list";
+    }
+}
 
 int contaNumeroDeBreakLines(char *texto){
 

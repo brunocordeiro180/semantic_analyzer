@@ -494,7 +494,8 @@ bin_exp:
 	bin_exp LOG_OP unary_log_exp {
 		$$ = createNode("\0");
 		$$->token = allocateToken($2.lexeme, $2.line, $2.column);
-		$$->type = getExpressionType($1, $3, $2, &errosSemanticos);
+		getExpressionType($1, $3, $2, &errosSemanticos);
+		$$->type = 0;
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
 	}
@@ -512,7 +513,12 @@ unary_log_exp:
 		$$->leaf1->token = allocateToken($1.lexeme, $1.line, $1.column);
 		$$->leaf2 = $2;
 
-		$$->type = $2->type;
+		if($2->type == 2 || $2->type == 3 || $2->type == 6){
+			$$->type = $2->type;
+		}else{
+			$$->type = 0;
+		}
+
 	}
 	| rel_exp {
 		$$ = $1;
@@ -524,7 +530,8 @@ rel_exp:
 	rel_exp REL_OP sum_exp {
 		$$ = createNode("\0");
 		$$->token = allocateToken($2.lexeme, $2.line, $2.column);
-		$$->type = getExpressionType($1, $3, $2, &errosSemanticos);
+		getExpressionType($1, $3, $2, &errosSemanticos);
+		$$->type = 0;
 		$$->leaf1 = $1;
 		$$->leaf2 = $3;
 	}

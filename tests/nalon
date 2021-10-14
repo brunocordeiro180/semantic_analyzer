@@ -1,5 +1,5 @@
-int list IL;
-float list FL;
+int                 list             IL;
+float                                 list               FL;
 
 int macaco(float x, int y, int list i){
     return x + y;

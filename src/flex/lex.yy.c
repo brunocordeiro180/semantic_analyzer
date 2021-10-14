@@ -547,14 +547,15 @@ char *yytext;
     #define RESET "\e[0m"
 
     int contaNumeroDeBreakLines(char *texto);
+    char *removeSubstring(char *str);
 
     int linhas = 1;
     int colunas = 1;
     int scopeId = 0;
 
     extern int scopeStack[100];
-#line 557 "src/flex/lex.yy.c"
 #line 558 "src/flex/lex.yy.c"
+#line 559 "src/flex/lex.yy.c"
 
 #define INITIAL 0
 #define COMENTARIO_MULTI_LINHA 1
@@ -770,10 +771,10 @@ YY_DECL
 		}
 
 	{
-#line 33 "src/flex/flex.l"
+#line 34 "src/flex/flex.l"
 
 
-#line 777 "src/flex/lex.yy.c"
+#line 778 "src/flex/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -833,7 +834,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 35 "src/flex/flex.l"
+#line 36 "src/flex/flex.l"
 {
     /* Ignora comentarios de multiplas linhas */ 
     linhas+=contaNumeroDeBreakLines(yytext); 
@@ -841,7 +842,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 40 "src/flex/flex.l"
+#line 41 "src/flex/flex.l"
 { 
     BEGIN(COMENTARIO_MULTI_LINHA); 
     colunas+=yyleng;
@@ -850,26 +851,26 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 45 "src/flex/flex.l"
+#line 46 "src/flex/flex.l"
 { 
     /* Ignora comentarios de uma linha */
     linhas+=1; colunas = 1;  
 }
 	YY_BREAK
 case YY_STATE_EOF(COMENTARIO_MULTI_LINHA):
-#line 50 "src/flex/flex.l"
+#line 51 "src/flex/flex.l"
 { 
     printf("\n(%d,%d)\t    " BHRED"Fim de comentário multilinhas não encontrado. \n\n"RESET, linhas, colunas);  yyterminate(); 
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 54 "src/flex/flex.l"
+#line 55 "src/flex/flex.l"
 { colunas+=yyleng; /* ignora espacos em branco */ }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 56 "src/flex/flex.l"
+#line 57 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -880,9 +881,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 64 "src/flex/flex.l"
+#line 65 "src/flex/flex.l"
 { 
-    strcpy(yylval.token.lexeme, yytext);
+    strcpy(yylval.token.lexeme, removeSubstring(yytext));
     yylval.token.line = linhas;
     yylval.token.column = colunas;
     colunas+=yyleng;
@@ -891,7 +892,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 72 "src/flex/flex.l"
+#line 73 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -927,7 +928,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 105 "src/flex/flex.l"
+#line 106 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -939,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 114 "src/flex/flex.l"
+#line 115 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -955,7 +956,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 127 "src/flex/flex.l"
+#line 128 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -966,7 +967,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 135 "src/flex/flex.l"
+#line 136 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -977,7 +978,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 143 "src/flex/flex.l"
+#line 144 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -988,7 +989,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 151 "src/flex/flex.l"
+#line 152 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -999,7 +1000,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 159 "src/flex/flex.l"
+#line 160 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1010,7 +1011,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 167 "src/flex/flex.l"
+#line 168 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1021,7 +1022,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 175 "src/flex/flex.l"
+#line 176 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1032,7 +1033,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 183 "src/flex/flex.l"
+#line 184 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1043,7 +1044,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 191 "src/flex/flex.l"
+#line 192 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1054,7 +1055,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 199 "src/flex/flex.l"
+#line 200 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1065,7 +1066,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 207 "src/flex/flex.l"
+#line 208 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1077,7 +1078,7 @@ YY_RULE_SETUP
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 215 "src/flex/flex.l"
+#line 216 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1088,7 +1089,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 224 "src/flex/flex.l"
+#line 225 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1099,7 +1100,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 232 "src/flex/flex.l"
+#line 233 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1110,7 +1111,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 240 "src/flex/flex.l"
+#line 241 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1123,7 +1124,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 250 "src/flex/flex.l"
+#line 251 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1135,7 +1136,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 259 "src/flex/flex.l"
+#line 260 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1146,7 +1147,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 267 "src/flex/flex.l"
+#line 268 "src/flex/flex.l"
 { 
     strcpy(yylval.token.lexeme, yytext);
     yylval.token.line = linhas;
@@ -1158,12 +1159,12 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 275 "src/flex/flex.l"
+#line 276 "src/flex/flex.l"
 { linhas++; colunas = 1;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 277 "src/flex/flex.l"
+#line 278 "src/flex/flex.l"
 { 
     
     printf("\n(%d,%d)" BHRED"Expression \"%s\" not recognized\n\n"RESET, linhas, colunas, yytext); 
@@ -1172,7 +1173,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 283 "src/flex/flex.l"
+#line 284 "src/flex/flex.l"
 {
     printf("\n(%d,%d)" BHRED"Expression \"%s\" not recognized\n\n"RESET, linhas, colunas, yytext); 
     colunas+=yyleng;
@@ -1180,10 +1181,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 288 "src/flex/flex.l"
+#line 289 "src/flex/flex.l"
 ECHO;
 	YY_BREAK
-#line 1187 "src/flex/lex.yy.c"
+#line 1188 "src/flex/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2151,8 +2152,17 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 288 "src/flex/flex.l"
+#line 289 "src/flex/flex.l"
 
+
+char *removeSubstring(char *str) {
+    
+    if(strstr(str, "int") != NULL) {
+        return "int list";
+    }else{
+        return "float list";
+    }
+}
 
 int contaNumeroDeBreakLines(char *texto){
 
